@@ -19,7 +19,7 @@ export default function DemoLabelPage() {
   return (
     <>
       <Helmet>
-        <title> Extra Components: Label | NotPump</title>
+        <title> Extra Components: Label | Zump.fun</title>
       </Helmet>
 
       <Box

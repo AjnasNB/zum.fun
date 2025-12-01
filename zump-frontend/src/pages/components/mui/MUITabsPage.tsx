@@ -72,7 +72,7 @@ export default function MUITabsPage() {
   return (
     <>
       <Helmet>
-        <title> MUI Components: Tabs | NotPump</title>
+        <title> MUI Components: Tabs | Zump.fun</title>
       </Helmet>
 
       <Box

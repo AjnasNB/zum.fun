@@ -73,7 +73,7 @@ export default function MUISliderPage() {
   return (
     <>
       <Helmet>
-        <title> MUI Components: Slider | NotPump</title>
+        <title> MUI Components: Slider | Zump.fun</title>
       </Helmet>
 
       <Box

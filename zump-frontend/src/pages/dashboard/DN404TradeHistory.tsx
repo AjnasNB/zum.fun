@@ -230,7 +230,7 @@ export default function DN404TradeHistory() {
   return (
     <div style={{width: '100%'}}>
       <Helmet>
-        <title>Token history | NotPump</title>
+        <title>Token history | Zump.fun</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>

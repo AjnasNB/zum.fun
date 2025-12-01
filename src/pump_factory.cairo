@@ -15,6 +15,7 @@ struct LaunchInfo {
 }
 
 #[starknet::contract]
+#[feature("deprecated_legacy_map")]
 mod PumpFactory {
     use super::{ContractAddress, get_caller_address, LaunchInfo};
     use starknet::storage::{
@@ -24,7 +25,7 @@ mod PumpFactory {
 
     #[storage]
     struct Storage {
-        launches: Map<u256, LaunchInfo>,
+        launches: LegacyMap<u256, LaunchInfo>,
         launch_count: u256,
         owner: ContractAddress,
     }
@@ -57,17 +58,14 @@ mod PumpFactory {
         self.launch_count.write(0);
     }
 
-    #[view]
     fn owner(self: @ContractState) -> ContractAddress {
         self.owner.read()
     }
 
-    #[view]
     fn total_launches(self: @ContractState) -> u256 {
         self.launch_count.read()
     }
 
-    #[view]
     fn get_launch(
         self: @ContractState,
         launch_id: u256
@@ -112,7 +110,7 @@ mod PumpFactory {
         ref self: ContractState,
         launch_id: u256
     ) {
-        let caller = get_caller_address();
+        let _caller = get_caller_address();
         // TODO: restrict to LiquidityMigration contract in prod
         let mut info = self.launches.read(launch_id);
         let mut updated_info = LaunchInfo {

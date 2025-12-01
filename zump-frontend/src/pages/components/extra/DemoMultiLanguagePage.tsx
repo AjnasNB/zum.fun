@@ -46,7 +46,7 @@ export default function DemoMultiLanguagePage() {
   return (
     <>
       <Helmet>
-        <title> Extra Components: Multi Language | NotPump</title>
+        <title> Extra Components: Multi Language | Zump.fun</title>
       </Helmet>
 
       <Box

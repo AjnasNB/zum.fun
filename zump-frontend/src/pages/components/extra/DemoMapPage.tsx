@@ -56,7 +56,7 @@ export default function DemoMapPage() {
   return (
     <>
       <Helmet>
-        <title> Extra Components: Map | NotPump</title>
+        <title> Extra Components: Map | Zump.fun</title>
       </Helmet>
 
       <Box

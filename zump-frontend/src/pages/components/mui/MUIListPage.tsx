@@ -91,7 +91,7 @@ export default function MUIListPage() {
   return (
     <>
       <Helmet>
-        <title> MUI Components: List | NotPump</title>
+        <title> MUI Components: List | Zump.fun</title>
       </Helmet>
 
       <Box

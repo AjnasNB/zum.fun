@@ -48,7 +48,7 @@ export default function FoundationTypographyPage() {
   return (
     <>
       <Helmet>
-        <title> Foundations: Typography | NotPump</title>
+        <title> Foundations: Typography | Zump.fun</title>
       </Helmet>
 
       <Box

@@ -10,7 +10,7 @@ export default function FaqsPage() {
   return (
     <>
       <Helmet>
-        <title> Faqs | NotPump</title>
+        <title> Faqs | Notpump</title>
       </Helmet>
 
       <FaqsHero />

@@ -12,7 +12,7 @@ export default function PricingPage() {
   return (
     <>
       <Helmet>
-        <title> Pricing | NotPump</title>
+        <title> Pricing | Notpump</title>
       </Helmet>
 
       <Container

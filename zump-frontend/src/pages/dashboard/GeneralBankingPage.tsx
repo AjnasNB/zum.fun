@@ -30,7 +30,7 @@ export default function GeneralBankingPage() {
   return (
     <>
       <Helmet>
-        <title> General: Banking | NotPump</title>
+        <title> General: Banking | Notpump</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'xl'}>

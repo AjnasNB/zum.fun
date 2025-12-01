@@ -19,7 +19,7 @@ export default function UserCardsPage() {
   return (
     <>
       <Helmet>
-        <title> User: Cards | NotPump</title>
+        <title> User: Cards | Notpump</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>

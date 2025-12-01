@@ -43,7 +43,7 @@ export default function MUIButtonsPage() {
   return (
     <>
       <Helmet>
-        <title> MUI Components: Buttons | NotPump</title>
+        <title> MUI Components: Buttons | Zump.fun</title>
       </Helmet>
 
       <Box

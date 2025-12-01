@@ -14,7 +14,7 @@ export default function MUIChipPage() {
   return (
     <>
       <Helmet>
-        <title> MUI Components: Chip | NotPump</title>
+        <title> MUI Components: Chip | Zump.fun</title>
       </Helmet>
 
       <Box

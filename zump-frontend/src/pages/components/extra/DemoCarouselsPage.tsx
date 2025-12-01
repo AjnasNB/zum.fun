@@ -34,7 +34,7 @@ export default function DemoCarouselsPage() {
   return (
     <>
       <Helmet>
-        <title> Extra Components: Carousels | NotPump</title>
+        <title> Extra Components: Carousels | Zump.fun</title>
       </Helmet>
 
       <Box

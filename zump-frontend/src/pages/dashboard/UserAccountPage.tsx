@@ -68,7 +68,7 @@ export default function UserAccountPage() {
   return (
     <>
       <Helmet>
-        <title> User: Account Settings | NotPump</title>
+        <title> User: Account Settings | Zump.fun</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>

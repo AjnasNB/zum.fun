@@ -8,7 +8,7 @@ export default function RegisterPage() {
   return (
     <>
       <Helmet>
-        <title> Register | NotPump</title>
+        <title> Register | Notpump</title>
       </Helmet>
 
       <Register />

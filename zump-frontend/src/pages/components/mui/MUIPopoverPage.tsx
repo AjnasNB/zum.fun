@@ -67,7 +67,7 @@ export default function MUIPopoverPage() {
   return (
     <>
       <Helmet>
-        <title> MUI Components: Popover | NotPump</title>
+        <title> MUI Components: Popover | Zump.fun</title>
       </Helmet>
 
       <Box

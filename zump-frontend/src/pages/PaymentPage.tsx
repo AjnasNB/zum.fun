@@ -14,7 +14,7 @@ export default function PaymentPage() {
   return (
     <>
       <Helmet>
-        <title> Payment | NotPump</title>
+        <title> Payment | Notpump</title>
       </Helmet>
 
       <Container

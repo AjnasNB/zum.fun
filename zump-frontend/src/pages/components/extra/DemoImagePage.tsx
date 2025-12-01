@@ -22,7 +22,7 @@ export default function DemoImagePage() {
   return (
     <>
       <Helmet>
-        <title> Extra Components: Image | NotPump</title>
+        <title> Extra Components: Image | Zump.fun</title>
       </Helmet>
 
       <Box

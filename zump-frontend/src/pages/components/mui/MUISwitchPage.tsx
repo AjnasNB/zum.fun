@@ -29,7 +29,7 @@ export default function MUISwitchPage() {
   return (
     <>
       <Helmet>
-        <title> MUI Components: Switch | NotPump</title>
+        <title> MUI Components: Switch | Zump.fun</title>
       </Helmet>
 
       <Box

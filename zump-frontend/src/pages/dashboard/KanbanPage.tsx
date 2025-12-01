@@ -100,7 +100,7 @@ export default function KanbanPage() {
   return (
     <>
       <Helmet>
-        <title> Kanban | NotPump</title>
+        <title> Kanban | Zump.fun</title>
       </Helmet>
 
       <Container maxWidth={false} sx={{ height: 1 }}>

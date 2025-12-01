@@ -60,17 +60,14 @@ mod ProtocolConfig {
         assert(caller == owner, 'ONLY_OWNER');
     }
 
-    #[view]
     fn owner(self: @ContractState) -> ContractAddress {
         self.owner.read()
     }
 
-    #[view]
     fn get_fee_config(self: @ContractState) -> (u16, ContractAddress) {
         (self.fee_bps.read(), self.fee_receiver.read())
     }
 
-    #[view]
     fn get_curve_limits(self: @ContractState) -> (u256, u256, u256, u256) {
         (
             self.min_base_price.read(),

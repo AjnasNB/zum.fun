@@ -8,7 +8,7 @@ export default function ChatPage() {
   return (
     <>
       <Helmet>
-        <title> Chat | NotPump</title>
+        <title> Chat | Notpump</title>
       </Helmet>
 
       <Chat />

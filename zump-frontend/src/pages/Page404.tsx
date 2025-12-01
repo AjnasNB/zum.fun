@@ -14,7 +14,7 @@ export default function Page404() {
   return (
     <>
       <Helmet>
-        <title> 404 Page Not Found | NotPump</title>
+        <title> 404 Page Not Found | Notpump</title>
       </Helmet>
 
       <MotionContainer>

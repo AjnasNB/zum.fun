@@ -81,7 +81,7 @@ export default function DemoUploadPage() {
   return (
     <>
       <Helmet>
-        <title> Extra Components: Upload | NotPump</title>
+        <title> Extra Components: Upload | Zump.fun</title>
       </Helmet>
 
       <Box

@@ -33,7 +33,7 @@ export default function MUIDataGridPage() {
   return (
     <>
       <Helmet>
-        <title> MUI Components: DataGrid | NotPump</title>
+        <title> MUI Components: DataGrid | Zump.fun</title>
       </Helmet>
 
       <Box

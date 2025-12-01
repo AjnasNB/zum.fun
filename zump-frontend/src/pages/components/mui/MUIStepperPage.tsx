@@ -18,7 +18,7 @@ export default function MUIStepperPage() {
   return (
     <>
       <Helmet>
-        <title> MUI Components: Stepper | NotPump</title>
+        <title> MUI Components: Stepper | Zump.fun</title>
       </Helmet>
 
       <Box

@@ -6,7 +6,7 @@ import * as path from "path";
 dotenv.config();
 
 const NETWORK = process.env.NETWORK || "sepolia";
-const RPC_URL = process.env.RPC_URL || `https://starknet-sepolia.public.blastapi.io/rpc/v0_7`;
+const RPC_URL = process.env.RPC_URL || `https://starknet-sepolia.publicnode.com`;
 const PRIVATE_KEY = process.env.PRIVATE_KEY || "";
 const ACCOUNT_ADDRESS = process.env.ACCOUNT_ADDRESS || "";
 

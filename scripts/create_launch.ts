@@ -7,7 +7,7 @@ dotenv.config();
 
 // Network configuration
 const NETWORK = process.env.NETWORK || "sepolia";
-const RPC_URL = process.env.RPC_URL || `https://starknet-sepolia.public.blastapi.io/rpc/v0_7`;
+const RPC_URL = process.env.RPC_URL || `https://starknet-sepolia.publicnode.com`;
 const PRIVATE_KEY = process.env.PRIVATE_KEY || "";
 const ACCOUNT_ADDRESS = process.env.ACCOUNT_ADDRESS || "";
 
@@ -219,6 +219,31 @@ async function main() {
 
     const launchId = await factoryContract.total_launches();
     console.log(`  ✅ Launch registered with ID: ${launchId}`);
+
+    // 5. Enable privacy features (optional)
+    const enablePrivacy = process.env.ENABLE_PRIVACY === "true";
+    if (enablePrivacy) {
+      console.log("\n🔒 Enabling privacy features...");
+      const deployments = await loadDeployments();
+      const privacyRelayerAddress = deployments.contracts.PrivacyRelayer.address;
+      
+      const poolContract = new Contract(
+        json.parse(
+          fs
+            .readFileSync(
+              path.join(__dirname, "..", "target", "dev", "BondingCurvePool.sierra.json")
+            )
+            .toString("ascii")
+        ).abi,
+        poolAddress,
+        provider
+      );
+      poolContract.connect(account);
+      
+      const privacyTx = await poolContract.set_privacy_relayer(privacyRelayerAddress);
+      await provider.waitForTransaction(privacyTx.transaction_hash);
+      console.log(`  ✅ Privacy enabled - ZK-Shielded trades available`);
+    }
 
     // Save launch info
     const launchData = {

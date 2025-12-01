@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { Container, Typography, Stack, Tooltip } from '@mui/material';
 // redux
 import {useLocales} from 'src/locales';
-import {DN404_DEFINE, NOTPUMP_DEFINE_FAIRLAUNCH} from 'src/descriptions/DN404';
+import {DN404_DEFINE, Notpump_DEFINE_FAIRLAUNCH} from 'src/descriptions/DN404';
 import {Box} from '@mui/system';
 import Iconify from 'src/components/iconify';
 import { useDispatch, useSelector } from '../../redux/store';
@@ -91,13 +91,13 @@ export default function DN404Fairlaunch() {
   return (
     <>
       <Helmet>
-        <title> DN404 list | NotPump</title>
+        <title> DN404 list | Zump.fun</title>
       </Helmet>
 
       <FormProvider methods={methods}>
         <Container maxWidth={themeStretch ? false : 'lg'}>
           <Typography variant="h4" gutterBottom>
-          <Tooltip title={`${translate(NOTPUMP_DEFINE_FAIRLAUNCH)}`} arrow>
+          <Tooltip title={`${translate(Notpump_DEFINE_FAIRLAUNCH)}`} arrow>
           <Box component="span">
              DN404 lists
             <Iconify icon="eva:info-outline" ml={1} color="gray" width={16} />

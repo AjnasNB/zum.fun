@@ -58,7 +58,7 @@ export default function DemoCopyToClipboardPage() {
   return (
     <>
       <Helmet>
-        <title> Extra Components: Copy To Clipboard | NotPump</title>
+        <title> Extra Components: Copy To Clipboard | Zump.fun</title>
       </Helmet>
 
       <Box

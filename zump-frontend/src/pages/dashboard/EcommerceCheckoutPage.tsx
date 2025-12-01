@@ -112,7 +112,7 @@ export default function EcommerceCheckoutPage() {
   return (
     <>
       <Helmet>
-        <title> Ecommerce: Checkout | NotPump</title>
+        <title> Ecommerce: Checkout | Notpump</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>

@@ -45,7 +45,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function HomeNotPump() {
+export default function HomeNotpump() {
   return (
     <StyledRoot>
       <Container component={MotionViewport}>
@@ -58,13 +58,13 @@ export default function HomeNotPump() {
         >
           <m.div variants={varFade().inUp}>
             <Typography component="div" variant="overline" sx={{ color: 'text.disabled' }}>
-              Notpump
+              Zump.fun
             </Typography>
           </m.div>
 
           <m.div variants={varFade().inDown}>
             <Typography variant="h2">
-              What NotPump <br /> helps you?
+              What Zump.fun <br /> helps you?
             </Typography>
           </m.div>
         </Stack>

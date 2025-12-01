@@ -73,7 +73,7 @@ const navConfig = [
         title: 'Top DN404',
         path: PATH_DASHBOARD.dn404.root,
         icon: ICONS.menuItem,
-        caption: 'NotPump use DN404 as a main token - is an implementation of a co-joined ERC20 and ERC721 pair.',
+        caption: 'Zump.fun uses DN404 as a main token - an implementation of a co-joined ERC20 and ERC721 pair.',
       },
       // INVOICE
 
@@ -81,7 +81,7 @@ const navConfig = [
       { title: 'Create DN404', icon: ICONS.label, path: PATH_DASHBOARD.createDn404.create, caption: DN404_DEFINE},
       {
         title: 'Docs',
-        path: 'https://www.notion.so/Notpump-172f28f798ed4c66a4bae4b96c16d7a5?pvs=4',
+        path: 'https://github.com/AjnasNB/zump.fun',
         icon: ICONS.external,
       },
 

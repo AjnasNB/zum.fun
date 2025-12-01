@@ -6,7 +6,7 @@ import { Box } from '@mui/material';
 // sections
 import {
   HomeHero,
-  HomeNotPump,
+  HomeNotpump,
   HomeDarkMode,
   HomeLookingFor,
   HomeForDesigner,
@@ -49,7 +49,7 @@ export default function HomePage() {
   return (
     <>
       <Helmet>
-        <title> The starting point for your NFT project | NotPump</title>
+        <title>Memecoin Launchpad on StarkNet | Zump.fun</title>
       </Helmet>
 
       {/* {progress} */}
@@ -63,7 +63,7 @@ export default function HomePage() {
           bgcolor: 'background.default',
         }}
       > */}
-        {/* <HomeNotPump /> */}
+        {/* <HomeNotpump /> */}
 {/* 
         <HomeHugePackElements />
 

@@ -37,7 +37,7 @@ export default function MUIRadioButtonsPage() {
   return (
     <>
       <Helmet>
-        <title> MUI Components: Radio Buttons | NotPump</title>
+        <title> MUI Components: Radio Buttons | Zump.fun</title>
       </Helmet>
 
       <Box

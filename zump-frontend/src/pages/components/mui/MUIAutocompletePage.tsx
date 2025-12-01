@@ -33,7 +33,7 @@ export default function MUIAutocompletePage() {
   return (
     <>
       <Helmet>
-        <title> MUI Components: Autocomplete | NotPump</title>
+        <title> MUI Components: Autocomplete | Zump.fun</title>
       </Helmet>
 
       <Box

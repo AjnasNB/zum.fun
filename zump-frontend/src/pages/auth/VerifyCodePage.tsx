@@ -17,7 +17,7 @@ export default function VerifyCodePage() {
   return (
     <>
       <Helmet>
-        <title> Verify Code | NotPump</title>
+        <title> Verify Code | Notpump</title>
       </Helmet>
 
       <EmailInboxIcon sx={{ mb: 5, height: 96 }} />

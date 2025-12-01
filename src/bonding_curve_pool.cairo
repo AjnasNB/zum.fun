@@ -1,3 +1,4 @@
+#[feature("deprecated_legacy_map")]
 use starknet::ContractAddress;
 use starknet::get_caller_address;
 
@@ -37,7 +38,9 @@ mod BondingCurvePool {
         ContractAddress, get_caller_address,
         IERC20Dispatcher, IERC20DispatcherTrait, IProtocolConfigDispatcher, IProtocolConfigDispatcherTrait
     };
-    use starknet::storage::{StoragePointerReadAccess, StoragePointerWriteAccess};
+    use starknet::storage::{
+        StoragePointerReadAccess, StoragePointerWriteAccess
+    };
 
     #[storage]
     struct Storage {
@@ -51,6 +54,10 @@ mod BondingCurvePool {
         tokens_sold: u256,
         reserve_balance: u256,
         migrated: bool,
+        privacy_relayer: ContractAddress,
+        private_trades_enabled: bool,
+        #[feature("deprecated_legacy_map")]
+        shielded_commitments: LegacyMap<felt252, bool>, // Track private trades
     }
 
     #[event]
@@ -59,6 +66,8 @@ mod BondingCurvePool {
         Buy: Buy,
         Sell: Sell,
         Migrated: Migrated,
+        PrivateBuy: PrivateBuy,
+        PrivateSell: PrivateSell,
     }
 
     #[derive(Drop, starknet::Event)]
@@ -85,6 +94,20 @@ mod BondingCurvePool {
         pool: ContractAddress,
     }
 
+    #[derive(Drop, starknet::Event)]
+    struct PrivateBuy {
+        commitment: felt252, // No buyer address exposed
+        amount_tokens: u256,
+        price: u256,
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct PrivateSell {
+        commitment: felt252, // No seller address exposed
+        amount_tokens: u256,
+        price: u256,
+    }
+
     #[constructor]
     fn constructor(
         ref self: ContractState,
@@ -109,7 +132,6 @@ mod BondingCurvePool {
     }
 
     // Basic linear price: base + slope * tokens_sold
-    #[view]
     fn current_price(self: @ContractState) -> u256 {
         let base = self.base_price.read();
         let slope = self.slope.read();
@@ -117,7 +139,6 @@ mod BondingCurvePool {
         base + (slope * sold)
     }
 
-    #[view]
     fn get_state(
         self: @ContractState
     ) -> (ContractAddress, ContractAddress, u256, u256, bool) {
@@ -130,52 +151,45 @@ mod BondingCurvePool {
         )
     }
 
-    #[view]
     fn get_current_price(self: @ContractState) -> u256 {
-        self.current_price()
+        let base = self.base_price.read();
+        let slope = self.slope.read();
+        let sold = self.tokens_sold.read();
+        base + (slope * sold)
     }
 
-    #[view]
     fn token(self: @ContractState) -> ContractAddress {
         self.token.read()
     }
 
-    #[view]
     fn quote_token(self: @ContractState) -> ContractAddress {
         self.quote_token.read()
     }
 
-    #[view]
     fn creator(self: @ContractState) -> ContractAddress {
         self.creator.read()
     }
 
-    #[view]
     fn base_price(self: @ContractState) -> u256 {
         self.base_price.read()
     }
 
-    #[view]
     fn slope(self: @ContractState) -> u256 {
         self.slope.read()
     }
 
-    #[view]
     fn max_supply(self: @ContractState) -> u256 {
         self.max_supply.read()
     }
 
-    #[view]
     fn tokens_sold(self: @ContractState) -> u256 {
         self.tokens_sold.read()
     }
 
-    #[view]
     fn reserve_balance(self: @ContractState) -> u256 {
         self.reserve_balance.read()
     }
 
-    #[view]
     fn migrated(self: @ContractState) -> bool {
         self.migrated.read()
     }
@@ -192,7 +206,9 @@ mod BondingCurvePool {
         let max_supply = self.max_supply.read();
         let sold = self.tokens_sold.read();
         assert(sold + amount_tokens <= max_supply, 'MAX_SUPPLY_REACHED');
-        let price = self.current_price();
+        let base = self.base_price.read();
+        let slope = self.slope.read();
+        let price = base + (slope * sold);
         let total_cost = price * amount_tokens; // simplified
 
         // protocol fee
@@ -240,7 +256,9 @@ mod BondingCurvePool {
         assert(!migrated, 'ALREADY_MIGRATED');
         let sold = self.tokens_sold.read();
         assert(sold >= amount_tokens, 'NOT_ENOUGH_SOLD');
-        let price = self.current_price();
+        let base = self.base_price.read();
+        let slope = self.slope.read();
+        let price = base + (slope * sold);
         let gross_refund = price * amount_tokens;
 
         // protocol fee
@@ -283,7 +301,7 @@ mod BondingCurvePool {
     fn set_migrated(
         ref self: ContractState
     ) {
-        let caller = get_caller_address();
+        let _caller = get_caller_address();
         // TODO in real version: store allowed migration contract & check
         // For PoC, trust a fixed caller or factory
         self.migrated.write(true);

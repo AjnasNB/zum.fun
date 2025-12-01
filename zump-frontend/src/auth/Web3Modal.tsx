@@ -14,10 +14,11 @@ const projectId = '1b8cb001b40b05553cf672a57ab66f8b'
 
 // 2. Create wagmiConfig
 const metadata = {
-  name: 'NotPump',
-  description: 'AppKit Example',
-  url: 'https://web3modal.com', // origin must match your domain & subdomain
-  icons: ['https://avatars.githubusercontent.com/u/37784886']
+  name: 'Zump.fun',
+  description:
+    'Memecoin Launchpad on StarkNet - Create tokens with bonding curves, ZK-shielded transactions, and MEV-resistant execution',
+  url: 'https://zump.fun', // origin must match your domain & subdomain
+  icons: ['/logo/zumpfun-logo.png'],
 }
 const wagmiOptions:any =  {
 

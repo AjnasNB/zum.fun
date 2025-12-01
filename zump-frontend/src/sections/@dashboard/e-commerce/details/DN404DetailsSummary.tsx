@@ -20,7 +20,7 @@ import {
 import { alpha, styled, useTheme } from '@mui/material/styles';
 import { Box } from '@mui/system';
 import Lightbox from 'src/components/lightbox';
-import { NOTPUMP_DEFINE_FAIRLAUNCH } from 'src/descriptions/DN404';
+import { Notpump_DEFINE_FAIRLAUNCH } from 'src/descriptions/DN404';
 import useResponsive from 'src/hooks/useResponsive';
 import { PATH_DASHBOARD } from '../../../../routes/paths';
 // utils
@@ -493,7 +493,7 @@ export default function DN404DetailsSummary({
           </Typography>
           {isDesktop ? (
             <Typography variant="subtitle2" sx={{ color: 'text.disabled', fontWeight: '300' }}>
-              {NOTPUMP_DEFINE_FAIRLAUNCH}
+              {Notpump_DEFINE_FAIRLAUNCH}
             </Typography>
           ) : (
             ''

@@ -12,7 +12,7 @@ export default function ComponentsOverviewPage() {
   return (
     <>
       <Helmet>
-        <title> Components Overview | NotPump</title>
+        <title> Components Overview | Zump.fun</title>
       </Helmet>
 
       <ComponentHero />

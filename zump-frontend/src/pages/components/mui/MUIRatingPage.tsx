@@ -74,7 +74,7 @@ export default function MUIRatingPage() {
   return (
     <>
       <Helmet>
-        <title> MUI Components: Rating | NotPump</title>
+        <title> MUI Components: Rating | Zump.fun</title>
       </Helmet>
 
       <Box

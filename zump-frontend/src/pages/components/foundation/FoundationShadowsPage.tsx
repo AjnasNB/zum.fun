@@ -44,7 +44,7 @@ export default function FoundationShadowsPage() {
   return (
     <>
       <Helmet>
-        <title> Foundations: Shadows | NotPump</title>
+        <title> Foundations: Shadows | Zump.fun</title>
       </Helmet>
 
       <Box

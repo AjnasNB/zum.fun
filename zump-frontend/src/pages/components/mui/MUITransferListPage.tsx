@@ -25,7 +25,7 @@ export default function MUITransferListPage() {
   return (
     <>
       <Helmet>
-        <title> MUI Components: Transfer List | NotPump</title>
+        <title> MUI Components: Transfer List | Zump.fun</title>
       </Helmet>
 
       <Box

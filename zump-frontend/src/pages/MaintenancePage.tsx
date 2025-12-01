@@ -11,7 +11,7 @@ export default function MaintenancePage() {
   return (
     <>
       <Helmet>
-        <title> Maintenance | NotPump</title>
+        <title> Maintenance | Notpump</title>
       </Helmet>
 
       <Stack sx={{ alignItems: 'center' }}>

@@ -14,7 +14,7 @@ export default function Page403() {
   return (
     <>
       <Helmet>
-        <title> 403 Forbidden | NotPump</title>
+        <title> 403 Forbidden | Notpump</title>
       </Helmet>
 
       <MotionContainer>

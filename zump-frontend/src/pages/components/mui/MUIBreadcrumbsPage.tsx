@@ -15,7 +15,7 @@ export default function MUIBreadcrumbsPage() {
   return (
     <>
       <Helmet>
-        <title> MUI Components: Breadcrumbs | NotPump</title>
+        <title> MUI Components: Breadcrumbs | Zump.fun</title>
       </Helmet>
 
       <Box

@@ -46,7 +46,7 @@ export default function MUICheckboxPage() {
   return (
     <>
       <Helmet>
-        <title> MUI Components: Checkbox | NotPump</title>
+        <title> MUI Components: Checkbox | Zump.fun</title>
       </Helmet>
 
       <Box

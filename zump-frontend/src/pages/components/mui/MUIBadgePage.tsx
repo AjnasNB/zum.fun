@@ -16,7 +16,7 @@ export default function MUIBadgePage() {
   return (
     <>
       <Helmet>
-        <title> MUI Components: Badge | NotPump</title>
+        <title> MUI Components: Badge | Zump.fun</title>
       </Helmet>
 
       <Box

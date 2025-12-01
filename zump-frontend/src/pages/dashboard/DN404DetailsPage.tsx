@@ -5,7 +5,7 @@ import {useParams} from 'react-router-dom';
 import {Box,Card,Container,Divider,Grid,Stack,Tab,Tabs,Typography} from '@mui/material';
 import {alpha} from '@mui/material/styles';
 // redux
-import {NOTPUMP_DN404} from 'src/descriptions/DN404';
+import {Notpump_DN404} from 'src/descriptions/DN404';
 import {addToCart,getProduct,gotoStep} from '../../redux/slices/DN404';
 import {useDispatch,useSelector} from '../../redux/store';
 // routes
@@ -90,7 +90,7 @@ export default function DN404DetailsPage() {
   return (
     <>
       <Helmet>
-        <title>{`Token ${product?.name.split(' ')[0].toUpperCase()} / (${product?.name}) | NotPump`}</title>
+        <title>{`Token ${product?.name.split(' ')[0].toUpperCase()} / (${product?.name}) | Zump.fun`}</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>
@@ -98,7 +98,7 @@ export default function DN404DetailsPage() {
           heading={`${product?.name.split(' ')[0].toUpperCase()} / (${product?.name})`}
           links={[
             {
-              name: NOTPUMP_DN404
+              name: Notpump_DN404
             },
           ]}
         />

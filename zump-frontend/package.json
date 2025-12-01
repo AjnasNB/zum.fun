@@ -5,9 +5,11 @@
   "description": "Cra & Typescript",
   "private": true,
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "postinstall": "node scripts/patch-import-attributes.js",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
     "eject": "react-scripts eject",
+    "test": "react-scripts test",
     "lint": "eslint --ext .ts,.tsx .",
     "lint:fix": "eslint --fix --ext .ts,.tsx .",
     "prettier": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'",
@@ -52,7 +54,7 @@
     "@mui/system": "^5.10.15",
     "@mui/x-data-grid": "^5.17.13",
     "@mui/x-date-pickers": "^5.0.9",
-    "@react-pdf/renderer": "^3.0.1",
+    "@react-pdf/renderer": "^3.4.4",
     "@reduxjs/toolkit": "^1.9.0",
     "@tanstack/react-query": "^5.51.23",
     "@web3modal/wagmi": "^5.0.11",
@@ -110,6 +112,8 @@
   "devDependencies": {
     "@babel/core": "^7.20.2",
     "@babel/plugin-syntax-import-attributes": "^7.27.1",
+    "@craco/craco": "^7.1.0",
+    "@react-native-async-storage/async-storage": "^2.2.0",
     "@types/autosuggest-highlight": "^3.2.0",
     "@types/mapbox-gl": "^2.7.8",
     "@types/node": "^18.11.9",
@@ -136,6 +140,7 @@
     "eslint-plugin-react": "^7.31.11",
     "eslint-plugin-react-hooks": "^4.6.0",
     "prettier": "^2.8.0",
+    "react-app-rewired": "^2.2.1",
     "typescript": "^4.9.3"
   },
   "overrides": {

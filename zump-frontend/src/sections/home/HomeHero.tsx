@@ -146,7 +146,7 @@ function Description() {
     <StyledDescription>
       <m.div variants={varFade().in}>
         <Typography variant="h2" sx={{ textAlign: 'center' }}>
-         User-Friendly NFT and Token Ecosystem
+         Memecoin Launchpad on StarkNet
         </Typography>
       </m.div>
 
@@ -160,13 +160,13 @@ function Description() {
             repeat: Infinity,
           }}
         >
-          Notpump
+          Zump.fun
         </StyledGradientText>
       </m.div>
 
       <m.div variants={varFade().in}>
         <Typography variant="body2" sx={{ textAlign: 'center' }}>
-        Generate user-friendly NFTs and tokens effortlessly with DN-404 (ERC-404), all for a very low cost, starting at just ~$0.2.
+        Launch memecoins on StarkNet with bonding curves, ZK-shielded transactions, and MEV-resistant execution. The pump.fun for StarkNet.
         </Typography>
       </m.div>
 
@@ -196,11 +196,11 @@ function Description() {
               variant="caption"
               target="_blank"
               rel="noopener"
-              href="https://github.com/not-found-pump"
+              href="https://github.com/AjnasNB/Notpump"
               sx={{ textDecoration: 'underline', display: 'inline-flex', alignItems: 'center' }}
             >
               <Iconify icon="eva:external-link-fill" width={16} sx={{ mr: 0.5 }} />
-              Notpump Github
+              Zump.fun Github
             </Link>
           </Stack>
 
@@ -211,10 +211,10 @@ function Description() {
             startIcon={<Iconify icon="eva:external-link-fill" width={24} />}
             target="_blank"
             rel="noopener"
-            href="https://github.com/not-found-pump/dn404"
+            href="https://github.com/AjnasNB/Notpump"
             sx={{ borderColor: 'text.primary' }}
           >
-            DN404 Docs
+            Documentation
           </Button>
         </Stack>
       </m.div>

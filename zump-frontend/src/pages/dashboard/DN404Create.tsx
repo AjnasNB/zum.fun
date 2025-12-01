@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async';
 // @mui
 import { Container, Typography } from '@mui/material';
 // routes
-import {NOTPUMP_DN404} from 'src/descriptions/DN404';
+import {Notpump_DN404} from 'src/descriptions/DN404';
 import { PATH_DASHBOARD } from '../../routes/paths';
 // components
 import { useSettingsContext } from '../../components/settings';
@@ -18,7 +18,7 @@ export default function DN404Create() {
   return (
     <>
       <Helmet>
-        <title> Blog: New Post | NotPump</title>
+        <title> Blog: New Post | zumpfun</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>
@@ -26,7 +26,7 @@ export default function DN404Create() {
           heading="Create your DN404"
           links={[
             {
-              name: NOTPUMP_DN404,
+              name: Notpump_DN404,
             },
           ]}
         />

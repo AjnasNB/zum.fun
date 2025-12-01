@@ -47,7 +47,7 @@ export default function FoundationColorsPage() {
   return (
     <>
       <Helmet>
-        <title> Foundations: Colors | NotPump</title>
+        <title> Foundations: Colors | Zump.fun</title>
       </Helmet>
 
       <Box

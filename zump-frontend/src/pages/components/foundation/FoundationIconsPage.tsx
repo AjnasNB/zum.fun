@@ -26,7 +26,7 @@ export default function FoundationIconsPage() {
   return (
     <>
       <Helmet>
-        <title> Foundations: Icons | NotPump</title>
+        <title> Foundations: Icons | Zump.fun</title>
       </Helmet>
 
       <Box

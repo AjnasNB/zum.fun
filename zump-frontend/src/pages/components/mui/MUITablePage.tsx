@@ -17,7 +17,7 @@ export default function MUITablePage() {
   return (
     <>
       <Helmet>
-        <title> MUI Components: Table | NotPump</title>
+        <title> MUI Components: Table | Zump.fun</title>
       </Helmet>
 
       <Box

@@ -128,7 +128,7 @@ export default function GeneralFilePage() {
   return (
     <>
       <Helmet>
-        <title> General: File | NotPump</title>
+        <title> General: File | Notpump</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'xl'}>

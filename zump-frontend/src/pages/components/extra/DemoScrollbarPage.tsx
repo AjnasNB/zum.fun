@@ -13,7 +13,7 @@ export default function DemoScrollbarPage() {
   return (
     <>
       <Helmet>
-        <title> Extra Components: Scrollbar | NotPump</title>
+        <title> Extra Components: Scrollbar | Zump.fun</title>
       </Helmet>
 
       <Box

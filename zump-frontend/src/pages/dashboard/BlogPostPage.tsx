@@ -77,7 +77,7 @@ export default function BlogPostPage() {
   return (
     <>
       <Helmet>
-        <title>{`Blog: ${post?.title || ''} | NotPump`}</title>
+        <title>{`Blog: ${post?.title || ''} | zumpfun`}</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>

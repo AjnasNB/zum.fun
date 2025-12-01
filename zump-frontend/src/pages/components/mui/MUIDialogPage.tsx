@@ -30,7 +30,7 @@ export default function MUIDialogPage() {
   return (
     <>
       <Helmet>
-        <title> MUI Components: Dialog | NotPump</title>
+        <title> MUI Components: Dialog | Zump.fun</title>
       </Helmet>
 
       <Box

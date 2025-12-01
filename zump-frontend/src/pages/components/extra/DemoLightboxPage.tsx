@@ -64,7 +64,7 @@ export default function DemoLightboxPage() {
   return (
     <>
       <Helmet>
-        <title> Extra Components: Lightbox | NotPump</title>
+        <title> Extra Components: Lightbox | Zump.fun</title>
       </Helmet>
 
       <Box

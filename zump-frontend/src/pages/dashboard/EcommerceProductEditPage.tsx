@@ -35,7 +35,7 @@ export default function EcommerceProductEditPage() {
   return (
     <>
       <Helmet>
-        <title> Ecommerce: Edit product | NotPump</title>
+        <title> Ecommerce: Edit product | Notpump</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>

@@ -61,7 +61,7 @@ const navConfig = [
   {
     title: 'Github & docs',
     icon: <Iconify icon="eva:book-open-fill" />,
-    path: 'https://github.com/not-found-pump',
+    path: 'https://github.com/AjnasNB/Notpump',
   },
 ];
 

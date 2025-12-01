@@ -23,7 +23,7 @@ export default function DemoMegaMenuPage() {
   return (
     <>
       <Helmet>
-        <title> Extra Components: Mega Menu | NotPump</title>
+        <title> Extra Components: Mega Menu | Zump.fun</title>
       </Helmet>
 
       <Box

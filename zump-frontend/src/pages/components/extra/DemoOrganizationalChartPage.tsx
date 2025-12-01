@@ -20,7 +20,7 @@ export default function DemoOrganizationalChartPage() {
   return (
     <>
       <Helmet>
-        <title> Extra Components: Organizational Chart | NotPump</title>
+        <title> Extra Components: Organizational Chart | Zump.fun</title>
       </Helmet>
 
       <Box

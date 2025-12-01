@@ -40,7 +40,7 @@ export default function GeneralEcommercePage() {
   return (
     <>
       <Helmet>
-        <title> General: E-commerce | NotPump</title>
+        <title> General: E-commerce | Notpump</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'xl'}>

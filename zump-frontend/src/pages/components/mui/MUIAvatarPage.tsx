@@ -33,7 +33,7 @@ export default function MUIAvatarPage() {
   return (
     <>
       <Helmet>
-        <title> MUI Components: Avatar | NotPump</title>
+        <title> MUI Components: Avatar | Zump.fun</title>
       </Helmet>
 
       <Box

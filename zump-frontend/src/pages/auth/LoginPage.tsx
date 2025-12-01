@@ -9,7 +9,7 @@ export default function LoginPage() {
   return (
     <>
       <Helmet>
-        <title> Login | NotPump</title>
+        <title> Login | Notpump</title>
       </Helmet>
 
       <Login />

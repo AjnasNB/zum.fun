@@ -64,7 +64,7 @@ export default function MUIProgressPage() {
   return (
     <>
       <Helmet>
-        <title> MUI Components: Progress | NotPump</title>
+        <title> MUI Components: Progress | Zump.fun</title>
       </Helmet>
 
       <Box

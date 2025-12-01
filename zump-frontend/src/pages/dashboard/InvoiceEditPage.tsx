@@ -24,7 +24,7 @@ export default function InvoiceEditPage() {
   return (
     <>
       <Helmet>
-        <title> Invoice: Edit | NotPump</title>
+        <title> Invoice: Edit | Notpump</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>

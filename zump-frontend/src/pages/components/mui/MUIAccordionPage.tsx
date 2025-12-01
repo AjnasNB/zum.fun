@@ -44,7 +44,7 @@ export default function MUIAccordionPage() {
   return (
     <>
       <Helmet>
-        <title> MUI Components: Accordion | NotPump</title>
+        <title> MUI Components: Accordion | Zump.fun</title>
       </Helmet>
 
       <Box

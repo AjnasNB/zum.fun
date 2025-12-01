@@ -24,7 +24,7 @@ export default function InvoiceDetailsPage() {
   return (
     <>
       <Helmet>
-        <title> Invoice: View | NotPump</title>
+        <title> Invoice: View | Notpump</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>

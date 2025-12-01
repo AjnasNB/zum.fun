@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
+import { useSignMessage } from 'wagmi';
 import { useNavigate } from 'react-router-dom';
 // @mui
 import {
@@ -32,6 +33,8 @@ export default function InvoiceToolbar({ invoice }: Props) {
 
   const [open, setOpen] = useState(false);
 
+   const { signMessageAsync } = useSignMessage();
+
   const handleOpen = () => {
     setOpen(true);
   };
@@ -42,6 +45,38 @@ export default function InvoiceToolbar({ invoice }: Props) {
 
   const handleEdit = () => {
     navigate(PATH_DASHBOARD.invoice.edit(invoice.id));
+  };
+
+  const handleMarkAsPaid = async () => {
+    try {
+      const message = `Demo signature: mark invoice ${invoice.invoiceNumber} as paid on Zump.fun. This does NOT move real funds.`;
+
+      // Prefer ArgentX (StarkNet) if available for demo
+      const anyWindow = window as any;
+      if (anyWindow.starknet?.argentX) {
+        await anyWindow.starknet.enable();
+
+        // Different ArgentX versions expose different APIs – keep this very loose for demo purposes
+        if (typeof anyWindow.starknet.argentX.signMessage === 'function') {
+          await anyWindow.starknet.argentX.signMessage(message);
+        } else if (typeof anyWindow.starknet.argentX.request === 'function') {
+          await anyWindow.starknet.argentX.request({
+            type: 'wallet_sign',
+            params: { message },
+          });
+        }
+      } else {
+        // Fallback: use EVM wallet via wagmi + Web3Modal
+        await signMessageAsync({ message });
+      }
+
+      // eslint-disable-next-line no-alert
+      alert('✅ Demo signature completed.\n\n(No real transaction was sent.)');
+    } catch (error) {
+      console.error('Demo sign cancelled or failed', error);
+      // eslint-disable-next-line no-alert
+      alert('Signature cancelled or failed. Try again from a connected wallet.');
+    }
   };
 
   return (
@@ -71,17 +106,11 @@ export default function InvoiceToolbar({ invoice }: Props) {
             fileName={invoice.invoiceNumber}
             style={{ textDecoration: 'none' }}
           >
-            {({ loading }) => (
-              <Tooltip title="Download">
-                <IconButton>
-                  {loading ? (
-                    <CircularProgress size={24} color="inherit" />
-                  ) : (
-                    <Iconify icon="eva:download-fill" />
-                  )}
-                </IconButton>
-              </Tooltip>
-            )}
+            <Tooltip title="Download">
+              <IconButton>
+                <Iconify icon="eva:download-fill" />
+              </IconButton>
+            </Tooltip>
           </PDFDownloadLink>
 
           <Tooltip title="Print">
@@ -108,6 +137,7 @@ export default function InvoiceToolbar({ invoice }: Props) {
           variant="outlined"
           startIcon={<Iconify icon="eva:checkmark-fill" />}
           sx={{ alignSelf: 'flex-end' }}
+          onClick={handleMarkAsPaid}
         >
           Mark as Paid
         </Button>

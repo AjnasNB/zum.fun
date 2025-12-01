@@ -52,12 +52,10 @@ mod LiquidityMigration {
         self.factory.write(factory);
     }
 
-    #[view]
     fn owner(self: @ContractState) -> ContractAddress {
         self.owner.read()
     }
 
-    #[view]
     fn factory(self: @ContractState) -> ContractAddress {
         self.factory.read()
     }

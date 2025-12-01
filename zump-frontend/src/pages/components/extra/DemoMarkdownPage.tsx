@@ -122,7 +122,7 @@ export default function DemoMarkdownPage() {
   return (
     <>
       <Helmet>
-        <title> Extra Components: Markdown | NotPump</title>
+        <title> Extra Components: Markdown | Zump.fun</title>
       </Helmet>
 
       <Box

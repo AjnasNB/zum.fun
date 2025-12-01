@@ -34,7 +34,7 @@ export default function PermissionDeniedPage() {
   return (
     <>
       <Helmet>
-        <title> Other Cases: Permission Denied | NotPump</title>
+        <title> Other Cases: Permission Denied | Notpump</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>

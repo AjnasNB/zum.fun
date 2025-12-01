@@ -33,7 +33,7 @@ export default function DemoAnimatePage() {
   return (
     <>
       <Helmet>
-        <title> Extra Components: Animate | NotPump</title>
+        <title> Extra Components: Animate | Zump.fun</title>
       </Helmet>
 
       <Box

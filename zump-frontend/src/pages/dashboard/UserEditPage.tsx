@@ -25,7 +25,7 @@ export default function UserEditPage() {
   return (
     <>
       <Helmet>
-        <title> User: Edit user | NotPump</title>
+        <title> User: Edit user | Notpump</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>

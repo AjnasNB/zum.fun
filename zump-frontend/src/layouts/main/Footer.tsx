@@ -59,7 +59,7 @@ export default function Footer() {
         <Typography variant="caption" component="div">
           © All rights reserved
           <br /> made by &nbsp;
-          <Link href="#">Notpump </Link>
+          <Link href="#">Zump.fun </Link>
         </Typography>
       </Container>
     </Box>
@@ -95,7 +95,7 @@ export default function Footer() {
 
           <Grid item xs={8} md={3}>
             <Typography variant="body2" sx={{ pr: { md: 5 } }}>
-            The starting point for your NFT project with NotPump
+              The starting point for your NFT project with Zump.fun
             </Typography>
 
             <Stack

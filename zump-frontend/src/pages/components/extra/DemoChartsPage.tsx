@@ -27,7 +27,7 @@ export default function DemoChartsPage() {
   return (
     <>
       <Helmet>
-        <title> Extra Components: Charts | NotPump</title>
+        <title> Extra Components: Charts | Zump.fun</title>
       </Helmet>
 
       <Box

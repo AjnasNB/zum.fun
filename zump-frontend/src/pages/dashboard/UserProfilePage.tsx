@@ -76,7 +76,7 @@ export default function UserProfilePage() {
   return (
     <>
       <Helmet>
-        <title> User: Profile | NotPump</title>
+        <title> User: Profile | Notpump</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>

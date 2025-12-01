@@ -92,7 +92,7 @@ export default function MUIMenuPage() {
   return (
     <>
       <Helmet>
-        <title> MUI Components: Menu | NotPump</title>
+        <title> MUI Components: Menu | Zump.fun</title>
       </Helmet>
 
       <Box
