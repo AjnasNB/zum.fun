@@ -161,7 +161,7 @@ export default function GeneralAppPage() {
           <Grid item xs={12} lg={8}>
             <AnalyticsConversionRates
               title="Top active volume"
-              subheader="Region volume DN404s fairlaunch ($)"
+              subheader="Region volume Zumpfun fairlaunch ($)"
               chart={{
                 series: [
                   { label: 'Italy', value: 400 },
@@ -180,7 +180,7 @@ export default function GeneralAppPage() {
           </Grid>
 
           <Grid item xs={12} md={6} lg={4}>
-            <AppTopRelated title="Trending DN404s bonding curve" list={_appRelated} />
+            <AppTopRelated title="Trending Tokens bonding curve" list={_appRelated} />
           </Grid>
 
           {/* <Grid item xs={12} md={6} lg={4}>
