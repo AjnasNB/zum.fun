@@ -196,7 +196,7 @@ function Description() {
               variant="caption"
               target="_blank"
               rel="noopener"
-              href="https://github.com/AjnasNB/Notpump"
+              href="https://github.com/AjnasNB/zump.fun"
               sx={{ textDecoration: 'underline', display: 'inline-flex', alignItems: 'center' }}
             >
               <Iconify icon="eva:external-link-fill" width={16} sx={{ mr: 0.5 }} />
@@ -211,7 +211,7 @@ function Description() {
             startIcon={<Iconify icon="eva:external-link-fill" width={24} />}
             target="_blank"
             rel="noopener"
-            href="https://github.com/AjnasNB/Notpump"
+            href="https://github.com/AjnasNB/zump.fun"
             sx={{ borderColor: 'text.primary' }}
           >
             Documentation
