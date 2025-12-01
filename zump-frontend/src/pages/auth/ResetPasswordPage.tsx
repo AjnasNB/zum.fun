@@ -17,7 +17,7 @@ export default function ResetPasswordPage() {
   return (
     <>
       <Helmet>
-        <title> Reset Password | Notpump</title>
+        <title> Reset Password | Zump.fun</title>
       </Helmet>
 
       <PasswordIcon sx={{ mb: 5, height: 96 }} />

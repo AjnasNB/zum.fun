@@ -188,7 +188,7 @@ export default function EcommerceProductListPage() {
   return (
     <>
       <Helmet>
-        <title> Ecommerce: Product List | Notpump</title>
+        <title> Ecommerce: Product List | Zump.fun</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>

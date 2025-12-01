@@ -29,7 +29,7 @@ export default function GeneralAnalyticsPage() {
   return (
     <>
       <Helmet>
-        <title> General: Analytics | Notpump</title>
+        <title> General: Analytics | Zump.fun</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'xl'}>

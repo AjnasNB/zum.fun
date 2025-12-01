@@ -24,7 +24,7 @@ export default function InvoiceDetailsPage() {
   return (
     <>
       <Helmet>
-        <title> Invoice: View | Notpump</title>
+        <title> Invoice: View | Zump.fun</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>

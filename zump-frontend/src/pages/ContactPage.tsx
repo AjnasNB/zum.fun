@@ -12,7 +12,7 @@ export default function ContactPage() {
   return (
     <>
       <Helmet>
-        <title> Contact us | Notpump</title>
+        <title> Contact us | Zump.fun</title>
       </Helmet>
 
       <ContactHero />

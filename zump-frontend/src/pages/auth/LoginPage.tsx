@@ -9,7 +9,7 @@ export default function LoginPage() {
   return (
     <>
       <Helmet>
-        <title> Login | Notpump</title>
+        <title> Login | Zump.fun</title>
       </Helmet>
 
       <Login />

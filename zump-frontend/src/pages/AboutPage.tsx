@@ -10,7 +10,7 @@ export default function AboutPage() {
   return (
     <>
       <Helmet>
-        <title> About us | Notpump</title>
+        <title> About us | Zump.fun - Privacy-First Memecoin Launchpad</title>
       </Helmet>
 
       <AboutHero />

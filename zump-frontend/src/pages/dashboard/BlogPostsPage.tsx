@@ -57,7 +57,7 @@ export default function BlogPostsPage() {
   return (
     <>
       <Helmet>
-        <title> List tokens launch | Notpump</title>
+        <title> List tokens launch | Zump.fun</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>

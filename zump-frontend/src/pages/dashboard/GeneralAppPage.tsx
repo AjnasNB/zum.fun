@@ -44,7 +44,7 @@ export default function GeneralAppPage() {
   return (
     <>
       <Helmet>
-        <title> General: App | Notpump</title>
+        <title> Zump.fun</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'xl'}>

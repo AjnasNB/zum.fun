@@ -11,7 +11,7 @@ export default function BlankPage() {
   return (
     <>
       <Helmet>
-        <title> Blank Page | Notpump</title>
+        <title> Blank Page | Zump.fun</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'xl'}>

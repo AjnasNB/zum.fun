@@ -189,7 +189,7 @@ export default function FileManagerPage() {
   return (
     <>
       <Helmet>
-        <title> File Manager | Notpump</title>
+        <title> File Manager | Zump.fun</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>

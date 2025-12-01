@@ -128,7 +128,7 @@ export default function GeneralFilePage() {
   return (
     <>
       <Helmet>
-        <title> General: File | Notpump</title>
+        <title> General: File | Zump.fun</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'xl'}>

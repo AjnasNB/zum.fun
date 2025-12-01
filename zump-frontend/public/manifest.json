@@ -1,6 +1,7 @@
 {
-  "name": "Zump.fun - Memecoin Launchpad",
+  "name": "Zump.fun - Private Memecoin Launchpad on Starknet",
   "short_name": "Zump.fun",
+  "description": "Trade like a ghost. First untraceable memecoin launchpad with zero-knowledge privacy.",
   "display": "standalone",
   "start_url": "/",
   "theme_color": "#000000",

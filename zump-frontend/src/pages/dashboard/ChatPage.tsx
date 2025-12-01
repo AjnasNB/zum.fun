@@ -8,7 +8,7 @@ export default function ChatPage() {
   return (
     <>
       <Helmet>
-        <title> Chat | Notpump</title>
+        <title> Chat | Zump.fun</title>
       </Helmet>
 
       <Chat />

@@ -38,15 +38,21 @@ export type IDN404MetaData = {
   createdAt: Date | string | number;
   category: string;
   gender: string;
-  // DN404
+  // Zump.fun Privacy Memecoin
   name: string;
   symbol: string;
-  wallet: string;
+  wallet: string; // Stealth wallet address (unlinkable)
   contract?: string;
   bondingCurveProccess?: number;
   marketCap?: number;
-  holdersCount?: number;
+  holdersCount?: number; // Encrypted holder count
   totalDeposit?: number;
+  // Privacy features
+  isPrivate?: boolean; // Whether trading is still private
+  isMigrated?: boolean; // Whether migrated to public DEX
+  stealthLaunch?: boolean; // Launched via stealth address
+  creatorRevealed?: boolean; // Has creator self-revealed
+  privacyLevel?: 'ghost' | 'stealth' | 'public'; // Privacy status
 };
 
 export type IDN404MetaDataFilter = {

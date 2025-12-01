@@ -242,7 +242,7 @@ export default function CalendarPage() {
   return (
     <>
       <Helmet>
-        <title> Calendar | Notpump</title>
+        <title> Calendar | Zump.fun</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'xl'}>

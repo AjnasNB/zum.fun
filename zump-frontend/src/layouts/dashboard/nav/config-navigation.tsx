@@ -65,22 +65,22 @@ const navConfig = [
   // MANAGEMENT
   // ----------------------------------------------------------------------
   {
-    subheader: 'List',
+    subheader: '👻 Privacy Trading',
     items: [
       // USER
       // { title: 'wallet', icon: ICONS.user, path: PATH_DASHBOARD.user.profile },
       {
-        title: 'Top DN404',
+        title: '🔥 Top Private Launches',
         path: PATH_DASHBOARD.dn404.root,
         icon: ICONS.menuItem,
-        caption: 'Zump.fun uses DN404 as a main token - an implementation of a co-joined ERC20 and ERC721 pair.',
+        caption: 'Explore untraceable memecoin launches with complete privacy and zero wallet linkability.',
       },
       // INVOICE
 
       // BLOG
-      { title: 'Create DN404', icon: ICONS.label, path: PATH_DASHBOARD.createDn404.create, caption: DN404_DEFINE},
+      { title: '🚀 Launch Private Memecoin', icon: ICONS.label, path: PATH_DASHBOARD.createDn404.create, caption: DN404_DEFINE},
       {
-        title: 'Docs',
+        title: '📚 Documentation',
         path: 'https://github.com/AjnasNB/zump.fun',
         icon: ICONS.external,
       },

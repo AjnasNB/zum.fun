@@ -17,7 +17,7 @@ export default function NewPasswordPage() {
   return (
     <>
       <Helmet>
-        <title> New Password | Notpump</title>
+        <title> New Password | Zump.fun</title>
       </Helmet>
 
       <SentIcon sx={{ mb: 5, height: 96 }} />

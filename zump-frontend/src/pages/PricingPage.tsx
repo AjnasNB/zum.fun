@@ -12,7 +12,7 @@ export default function PricingPage() {
   return (
     <>
       <Helmet>
-        <title> Pricing | Notpump</title>
+        <title> Pricing | Zump.fun</title>
       </Helmet>
 
       <Container

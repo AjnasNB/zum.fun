@@ -91,7 +91,7 @@ export default function DN404Fairlaunch() {
   return (
     <>
       <Helmet>
-        <title> DN404 list | Zump.fun</title>
+        <title> 👻 Private Memecoin Launches | Zump.fun</title>
       </Helmet>
 
       <FormProvider methods={methods}>
@@ -99,7 +99,7 @@ export default function DN404Fairlaunch() {
           <Typography variant="h4" gutterBottom>
           <Tooltip title={`${translate(Notpump_DEFINE_FAIRLAUNCH)}`} arrow>
           <Box component="span">
-             DN404 lists
+             👻 Private Memecoin Launches
             <Iconify icon="eva:info-outline" ml={1} color="gray" width={16} />
           </Box>
         </Tooltip>

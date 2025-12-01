@@ -14,7 +14,7 @@ export default function PaymentPage() {
   return (
     <>
       <Helmet>
-        <title> Payment | Notpump</title>
+        <title> Payment | Zump.fun</title>
       </Helmet>
 
       <Container

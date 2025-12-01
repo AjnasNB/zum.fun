@@ -20,7 +20,7 @@ export default function ComingSoonPage() {
   return (
     <>
       <Helmet>
-        <title> Coming Soon | Notpump</title>
+        <title> Coming Soon | Zump.fun</title>
       </Helmet>
 
       <Typography variant="h3" paragraph>

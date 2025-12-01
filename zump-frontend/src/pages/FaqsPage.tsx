@@ -10,7 +10,7 @@ export default function FaqsPage() {
   return (
     <>
       <Helmet>
-        <title> Faqs | Notpump</title>
+        <title> Faqs | Zump.fun</title>
       </Helmet>
 
       <FaqsHero />

@@ -59,8 +59,8 @@ export default function AboutHero() {
                 fontWeight: 'fontWeightMedium',
               }}
             >
-              Let&apos;s work together and
-              <br /> make awesome site easily
+              Building the future of private trading
+              <br /> on Starknet with zero-knowledge technology
             </Typography>
           </m.div>
         </StyledContent>

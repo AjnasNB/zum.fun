@@ -8,7 +8,7 @@ export default function RegisterPage() {
   return (
     <>
       <Helmet>
-        <title> Register | Notpump</title>
+        <title> Register | Zump.fun</title>
       </Helmet>
 
       <Register />

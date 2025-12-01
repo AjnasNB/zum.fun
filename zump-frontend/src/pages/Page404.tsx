@@ -14,7 +14,7 @@ export default function Page404() {
   return (
     <>
       <Helmet>
-        <title> 404 Page Not Found | Notpump</title>
+        <title> 404 Page Not Found | Zump.fun</title>
       </Helmet>
 
       <MotionContainer>

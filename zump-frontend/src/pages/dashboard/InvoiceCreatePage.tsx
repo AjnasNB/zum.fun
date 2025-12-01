@@ -17,7 +17,7 @@ export default function InvoiceCreatePage() {
   return (
     <>
       <Helmet>
-        <title> Invoices: Create a new invoice | Notpump</title>
+        <title> Invoices: Create a new invoice | Zump.fun</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>

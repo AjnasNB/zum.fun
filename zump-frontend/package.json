@@ -1,8 +1,8 @@
 {
-  "name": "@minimal/material-kit-react",
-  "author": "Minimals UI",
-  "version": "4.1.0",
-  "description": "Cra & Typescript",
+  "name": "zump-fun-frontend",
+  "author": "Zump.fun Team",
+  "version": "1.0.0",
+  "description": "Zump.fun - First Private Memecoin Launchpad on Starknet. Trade like a ghost with zero-knowledge privacy.",
   "private": true,
   "scripts": {
     "postinstall": "node scripts/patch-import-attributes.js",

@@ -11,7 +11,7 @@ export default function MaintenancePage() {
   return (
     <>
       <Helmet>
-        <title> Maintenance | Notpump</title>
+        <title> Maintenance | Zump.fun</title>
       </Helmet>
 
       <Stack sx={{ alignItems: 'center' }}>

@@ -75,7 +75,7 @@ export default function AboutWhat() {
           <Grid item xs={12} md={6} lg={5}>
             <m.div variants={varFade().inRight}>
               <Typography variant="h2" sx={{ mb: 3 }}>
-                What is minimal?
+                What is Zump.fun?
               </Typography>
             </m.div>
 
@@ -85,10 +85,10 @@ export default function AboutWhat() {
                   color: theme.palette.mode === 'light' ? 'text.secondary' : 'common.white',
                 }}
               >
-                Our theme is the most advanced and user-friendly theme you will find on the market,
-                we have documentation and video to help set your site really easily, pre-installed
-                demos you can import in one click and everything from the theme options to page
-                content can be edited from the front-end. This is the theme you are looking for.
+                Zump.fun is the first untraceable, privacy-focused memecoin launchpad on Starknet. 
+                Using cutting-edge zero-knowledge technology (Noir zkContracts, Garaga proofs, and Ztarknet encrypted state), 
+                we enable traders to launch and trade memecoins with complete anonymity. Every transaction is untraceable, 
+                every position is private, and every wallet is unlinkable. Trade like a ghost. Pump like a god.
               </Typography>
             </m.div>
 
