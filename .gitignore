@@ -5,6 +5,8 @@ documents
 # Environment variables
 .env
 .env.local
+.env.deployment
+.env.*.local
 .kiro
 
 # Deployment files

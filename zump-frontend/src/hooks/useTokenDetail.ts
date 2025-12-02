@@ -206,5 +206,4 @@ export function useTokenDetail(
   };
 }
 
-export { useTokenDetail };
 export default useTokenDetail;

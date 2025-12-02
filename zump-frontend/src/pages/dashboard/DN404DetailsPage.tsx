@@ -308,7 +308,9 @@ export default function DN404DetailsPage() {
                 md: 'repeat(3, 1fr)',
               }}
               sx={{ my: 1 }}
-            />
+            >
+              {/* Placeholder for future content */}
+            </Box>
 
             <Card>
               <Tabs

@@ -324,8 +324,8 @@ export class ContractService {
       pool.call('slope'),
     ]);
     
-    const stateObj = state as { tokens_sold?: unknown };
-    const tokensSold = this.parseU256(stateObj.tokens_sold);
+    const stateObj = this.parsePoolState(state);
+    const tokensSold = stateObj.tokensSold;
     const base = this.parseU256(basePrice);
     const s = this.parseU256(slope);
     const amount = BigInt(amountTokens);
@@ -361,8 +361,8 @@ export class ContractService {
       pool.call('slope'),
     ]);
     
-    const stateObj2 = state as { tokens_sold?: unknown };
-    const tokensSold = this.parseU256(stateObj2.tokens_sold);
+    const stateObj2 = this.parsePoolState(state);
+    const tokensSold = stateObj2.tokensSold;
     const base = this.parseU256(basePrice);
     const s = this.parseU256(slope);
     const amount = BigInt(amountTokens);
@@ -565,16 +565,15 @@ export class ContractService {
     try {
       const events = receipt.events || [];
       
-      for (const event of events) {
-        // Look for LaunchCreated event
-        if (event.keys && event.data) {
-          // Event structure: launch_id (key), token, pool, stealth_creator, migration_threshold (data)
-          return {
-            launchId: this.parseU256(event.keys[0]),
-            token: event.data[0]?.toString() || '0x0',
-            pool: event.data[1]?.toString() || '0x0',
-          };
-        }
+      const launchEvent = events.find((event: any) => event.keys && event.data);
+      
+      if (launchEvent) {
+        // Event structure: launch_id (key), token, pool, stealth_creator, migration_threshold (data)
+        return {
+          launchId: this.parseU256(launchEvent.keys[0]),
+          token: launchEvent.data[0]?.toString() || '0x0',
+          pool: launchEvent.data[1]?.toString() || '0x0',
+        };
       }
       
       return null;

@@ -4,7 +4,9 @@
  * Requirements: 1.1, 1.3
  */
 
+// eslint-disable-next-line import/order
 import type { Abi } from 'starknet';
+
 import PumpFactoryAbi from './PumpFactory.json';
 import BondingCurvePoolAbi from './BondingCurvePool.json';
 import MemecoinTokenAbi from './MemecoinToken.json';

@@ -277,9 +277,9 @@ export default function TradingPanel({
         </Alert>
       )}
 
-      <Stack spacing={2}>
+      <Box>
         {/* Amount Input */}
-        <Box>
+        <Box sx={{ mb: 2 }}>
           <Stack direction="row" justifyContent="space-between" sx={{ mb: 1 }}>
             <Typography variant="body2" color="text.secondary">
               {activeTab === 'buy' ? `${tokenSymbol} Amount` : `${tokenSymbol} Amount`}
@@ -321,7 +321,7 @@ export default function TradingPanel({
         </Box>
 
         {/* Swap Icon */}
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
           <IconButton 
             sx={{ 
               bgcolor: alpha(theme.palette.primary.main, 0.08),
@@ -335,7 +335,7 @@ export default function TradingPanel({
         </Box>
 
         {/* Calculated Value Display */}
-        <Box>
+        <Box sx={{ mb: 2 }}>
           <Stack direction="row" justifyContent="space-between" sx={{ mb: 1 }}>
             <Typography variant="body2" color="text.secondary">
               {activeTab === 'buy' ? `Cost (${quoteSymbol})` : `Return (${quoteSymbol})`}
@@ -360,7 +360,7 @@ export default function TradingPanel({
         </Box>
 
         {/* Slippage Settings */}
-        <Box>
+        <Box sx={{ mb: 2 }}>
           <Stack 
             direction="row" 
             alignItems="center" 
@@ -410,13 +410,13 @@ export default function TradingPanel({
           )}
         </Box>
 
-        <Divider />
+        <Divider sx={{ mb: 2 }} />
 
         {/* Trade Summary */}
         {amount && parseFloat(amount) > 0 && calculatedValue !== null && (
-          <Box sx={{ p: 2, bgcolor: 'background.neutral', borderRadius: 1 }}>
-            <Stack spacing={1}>
-              <Stack direction="row" justifyContent="space-between">
+          <Box sx={{ p: 2, bgcolor: 'background.neutral', borderRadius: 1, mb: 2 }}>
+            <Box>
+              <Stack direction="row" justifyContent="space-between" sx={{ mb: 1 }}>
                 <Typography variant="body2" color="text.secondary">
                   {activeTab === 'buy' ? 'You Pay' : 'You Sell'}
                 </Typography>
@@ -427,7 +427,7 @@ export default function TradingPanel({
                   }
                 </Typography>
               </Stack>
-              <Stack direction="row" justifyContent="space-between">
+              <Stack direction="row" justifyContent="space-between" sx={{ mb: 1 }}>
                 <Typography variant="body2" color="text.secondary">
                   {activeTab === 'buy' ? 'You Receive' : 'You Receive'}
                 </Typography>
@@ -439,7 +439,7 @@ export default function TradingPanel({
                 </Typography>
               </Stack>
               {currentPrice !== undefined && currentPrice !== null && (
-                <Stack direction="row" justifyContent="space-between">
+                <Stack direction="row" justifyContent="space-between" sx={{ mb: 1 }}>
                   <Typography variant="body2" color="text.secondary">
                     Current Price
                   </Typography>
@@ -456,7 +456,7 @@ export default function TradingPanel({
                   {slippage}%
                 </Typography>
               </Stack>
-            </Stack>
+            </Box>
           </Box>
         )}
 
@@ -472,7 +472,7 @@ export default function TradingPanel({
         >
           {buttonText}
         </Button>
-      </Stack>
+      </Box>
     </Card>
   );
 }
