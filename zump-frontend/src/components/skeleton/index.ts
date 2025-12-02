@@ -6,3 +6,5 @@ export { default as SkeletonMailNavItem } from './SkeletonMailNavItem';
 export { default as SkeletonKanbanColumn } from './SkeletonKanbanColumn';
 export { default as SkeletonProductDetails } from './SkeletonProductDetails';
 export { default as SkeletonConversationItem } from './SkeletonConversationItem';
+export { default as SkeletonTradingPanel } from './SkeletonTradingPanel';
+export { default as SkeletonTradeHistory } from './SkeletonTradeHistory';

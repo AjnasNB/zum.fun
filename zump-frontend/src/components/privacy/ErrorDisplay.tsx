@@ -129,7 +129,7 @@ export function ErrorDisplay({
             <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
               Önerilen Çözümler:
             </Typography>
-            <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+            <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
               {error.recoveryOptions.map((option, index) => (
                 <Button
                   key={index}

@@ -1,55 +1,19 @@
+// Legacy Web3Modal - Now using StarknetProvider instead
+// This file is kept for backward compatibility but functionality moved to StarknetProvider
 
-import { createWeb3Modal } from '@web3modal/wagmi/react'
-import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
+import React from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { StarknetProvider } from '../providers/StarknetProvider';
 
-import { WagmiProvider } from 'wagmi'
-import { arbitrum, base, mainnet, sepolia, scroll, optimism, bsc } from 'wagmi/chains'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+// Setup queryClient
+const queryClient = new QueryClient();
 
-// 0. Setup queryClient
-const queryClient = new QueryClient()
-
-// 1. Your WalletConnect Cloud project ID
-const projectId = '1b8cb001b40b05553cf672a57ab66f8b'
-
-// 2. Create wagmiConfig
-const metadata = {
-  name: 'Zump.fun',
-  description:
-    'Memecoin Launchpad on StarkNet - Create tokens with bonding curves, ZK-shielded transactions, and MEV-resistant execution',
-  url: 'https://zump.fun', // origin must match your domain & subdomain
-  icons: ['/logo/zumpfun-logo.png'],
-}
-const wagmiOptions:any =  {
-
-}
-const chains = [mainnet, arbitrum, base, optimism, bsc, scroll, sepolia] as const
-const config = defaultWagmiConfig({
-  chains,
-  projectId,
-  metadata,
-  auth: {
-    email: true, // default to true
-    socials: ['google', 'x', 'github', 'discord', 'apple', 'facebook', 'farcaster'],
-    showWallets: true, // default to true
-    walletFeatures: true // default to true
-  },
-  ...wagmiOptions // Optional - Override createConfig parameters
-})
-
-// 3. Create modal
-createWeb3Modal({
-  wagmiConfig: config,
-  projectId,
-  enableAnalytics: true, // Optional - defaults to your Cloud configuration
-  enableOnramp: true // Optional - false as default
-})
-
-export function Web3ModalProvider({ children }:{children:any}) {
+export function Web3ModalProvider({ children }: { children: React.ReactNode }) {
   return (
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    </WagmiProvider>
-  )
+    <QueryClientProvider client={queryClient}>
+      <StarknetProvider>
+        {children}
+      </StarknetProvider>
+    </QueryClientProvider>
+  );
 }
-    

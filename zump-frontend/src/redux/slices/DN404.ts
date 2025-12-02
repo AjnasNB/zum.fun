@@ -1,15 +1,36 @@
 import sum from 'lodash/sum';
 import uniq from 'lodash/uniq';
 import uniqBy from 'lodash/uniqBy';
-import { createSlice, Dispatch } from '@reduxjs/toolkit';
+import { createSlice, Dispatch, PayloadAction } from '@reduxjs/toolkit';
 import { paramCase } from 'change-case';
 // utils
-import {randomInArray} from 'src/_mock';
-import axios from '../../utils/axios';
-import { IDN404MetaDataState, ICheckoutCartItem } from '../../@types/DN404';
-import DN404Inprogress from "../../DN404.list.json"
-import DN404Medias from "../../DN404.media.json"
+import { IDN404MetaDataState, ICheckoutCartItem, IDN404MetaData } from '../../@types/DN404';
+// services
+import { getContractService, PublicLaunchInfo, PoolState } from '../../services/contractService';
+import { getSupabaseService } from '../../services/supabaseService';
+import { TokenMetadata } from '../../@types/supabase';
+// utils
+import { calculatePrice, calculateProgress, calculateMarketCap } from '../../hooks/useTokenList';
+
+// Default placeholder image for tokens without images
+const DEFAULT_TOKEN_IMAGE = '/assets/placeholder.svg';
+
 // ----------------------------------------------------------------------
+
+// Cache for on-chain data
+interface OnChainCache {
+  launches: PublicLaunchInfo[];
+  poolStates: Map<string, PoolState>;
+  lastFetched: number;
+}
+
+let onChainCache: OnChainCache = {
+  launches: [],
+  poolStates: new Map(),
+  lastFetched: 0,
+};
+
+const CACHE_TTL = 30000; // 30 seconds
 
 const initialState: IDN404MetaDataState = {
   isLoading: false,
@@ -53,6 +74,19 @@ const slice = createSlice({
     getProductSuccess(state, action) {
       state.isLoading = false;
       state.product = action.payload;
+    },
+
+    // ADD NEW PRODUCT (for real-time updates)
+    addProduct(state, action: PayloadAction<IDN404MetaData>) {
+      state.products = [action.payload, ...state.products];
+    },
+
+    // UPDATE PRODUCT (for real-time price updates)
+    updateProduct(state, action: PayloadAction<{ id: string; updates: Partial<IDN404MetaData> }>) {
+      const index = state.products.findIndex((p) => p.id === action.payload.id);
+      if (index !== -1) {
+        state.products[index] = { ...state.products[index], ...action.payload.updates };
+      }
     },
 
     // CHECKOUT
@@ -171,6 +205,15 @@ const slice = createSlice({
       state.checkout.shipping = shipping;
       state.checkout.total = state.checkout.subtotal - state.checkout.discount + shipping;
     },
+
+    // Clear cache
+    clearCache() {
+      onChainCache = {
+        launches: [],
+        poolStates: new Map(),
+        lastFetched: 0,
+      };
+    },
   },
 });
 
@@ -191,24 +234,222 @@ export const {
   applyDiscount,
   increaseQuantity,
   decreaseQuantity,
+  addProduct,
+  updateProduct,
+  clearCache,
 } = slice.actions;
 
 // ----------------------------------------------------------------------
 
-export function getProducts() {
+/**
+ * Convert on-chain launch data to IDN404MetaData format
+ */
+function convertLaunchToProduct(
+  launch: PublicLaunchInfo,
+  poolState: PoolState | null,
+  metadata: TokenMetadata | null,
+  index: number
+): IDN404MetaData {
+  const tokensSold = poolState?.tokensSold || BigInt(0);
+  const currentPrice = calculatePrice(launch.basePrice, launch.slope, tokensSold);
+  const progress = calculateProgress(tokensSold, launch.maxSupply);
+  const marketCap = calculateMarketCap(currentPrice, tokensSold);
+
+  // Convert bigint to number for display (with scaling)
+  const priceNumber = Number(currentPrice) / 1e18;
+  const marketCapNumber = Number(marketCap) / 1e36; // price * tokens, both scaled
+
+  // Use metadata image or default placeholder
+  const imageUrl = metadata?.image_url || DEFAULT_TOKEN_IMAGE;
+
+  return {
+    id: launch.token,
+    coverUrl: imageUrl,
+    images: [imageUrl],
+    price: priceNumber,
+    code: launch.symbol,
+    sku: launch.token.slice(0, 16),
+    tags: metadata?.tags || [],
+    priceSale: null,
+    totalRating: 0,
+    totalReview: 0,
+    ratings: [],
+    reviews: [],
+    colors: ['#00AB55', '#1890FF'],
+    status: poolState?.migrated ? 'migrated' : 'active',
+    inventoryType: poolState?.migrated ? 'Migrated' : 'In Progress',
+    sizes: [],
+    available: Number(launch.maxSupply - tokensSold),
+    description: metadata?.description || '',
+    sold: Number(tokensSold),
+    createdAt: metadata?.created_at || new Date(Number(launch.createdAt) * 1000).toISOString(),
+    category: 'Token',
+    gender: 'Unisex',
+    // Zump.fun specific fields
+    name: metadata?.name || launch.name || 'Unknown Token',
+    symbol: metadata?.symbol || launch.symbol || '???',
+    wallet: metadata?.creator_address || '0x0',
+    contract: launch.token,
+    bondingCurveProccess: progress,
+    marketCap: marketCapNumber,
+    holdersCount: 0, // Would need separate query
+    totalDeposit: Number(poolState?.reserveBalance || BigInt(0)) / 1e18,
+    // Privacy features
+    isPrivate: !poolState?.migrated,
+    isMigrated: poolState?.migrated || false,
+    stealthLaunch: true,
+    creatorRevealed: false,
+    privacyLevel: poolState?.migrated ? 'public' : 'stealth',
+  };
+}
+
+/**
+ * Fetch products from on-chain data
+ * Requirements: 3.1, 3.4
+ */
+export function getProducts(forceRefresh = false) {
+  return async (dispatch: Dispatch) => {
+    dispatch(slice.actions.startLoading());
+
+    try {
+      const now = Date.now();
+      const useCache = !forceRefresh && onChainCache.lastFetched > 0 && now - onChainCache.lastFetched < CACHE_TTL;
+
+      let launches: PublicLaunchInfo[];
+      let poolStates: Map<string, PoolState>;
+
+      if (useCache) {
+        launches = onChainCache.launches;
+        poolStates = onChainCache.poolStates;
+      } else {
+        const contractService = getContractService();
+
+        // Fetch all launches from PumpFactory
+        launches = await contractService.getAllLaunches();
+
+        // Fetch pool states for each launch
+        poolStates = new Map();
+        const poolStatePromises = launches.map(async (launch) => {
+          try {
+            const state = await contractService.getPoolState(launch.pool);
+            poolStates.set(launch.pool, state);
+          } catch (err) {
+            console.error(`Failed to fetch pool state for ${launch.pool}:`, err);
+          }
+        });
+
+        await Promise.all(poolStatePromises);
+
+        // Update cache
+        onChainCache = {
+          launches,
+          poolStates,
+          lastFetched: now,
+        };
+      }
+
+      // If no on-chain data, return empty list
+      if (launches.length === 0) {
+        console.log('No on-chain launches found');
+        dispatch(slice.actions.getProductsSuccess([]));
+        return;
+      }
+
+      // Fetch metadata from Supabase
+      let metadataMap: Map<string, TokenMetadata> = new Map();
+      try {
+        const supabaseService = getSupabaseService();
+        const tokenAddresses = launches.map((l) => l.token);
+        const metadataList = await supabaseService.getTokenMetadataByAddresses(tokenAddresses);
+        metadataMap = new Map(metadataList.map((m) => [m.token_address, m]));
+      } catch (err) {
+        console.warn('Failed to fetch metadata from Supabase:', err);
+      }
+
+      // Convert to products
+      const products = launches.map((launch, index) => {
+        const poolState = poolStates.get(launch.pool) || null;
+        const metadata = metadataMap.get(launch.token) || null;
+        return convertLaunchToProduct(launch, poolState, metadata, index);
+      });
+
+      // Sort by creation date (newest first)
+      products.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+      dispatch(slice.actions.getProductsSuccess(products));
+    } catch (error) {
+      console.error('Failed to fetch products:', error);
+      dispatch(slice.actions.hasError(error));
+      // Return empty list on error - no mock data fallback
+      dispatch(slice.actions.getProductsSuccess([]));
+    }
+  };
+}
+
+// ----------------------------------------------------------------------
+
+/**
+ * Fetch single product by name/slug
+ */
+export function getProduct(name: string) {
   return async (dispatch: Dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      // Use mock data from DN404.list.json instead of API call
-      const _products = DN404Inprogress.products || [];
-      // eslint-disable-next-line array-callback-return
-      _products.map((p:any,_:number) => {
-        _products[_].images = [randomInArray(DN404Medias),randomInArray(DN404Medias),randomInArray(DN404Medias),randomInArray(DN404Medias),randomInArray(DN404Medias),randomInArray(DN404Medias)]
-        _products[_].coverUrl = randomInArray(DN404Medias)
-      })
-      console.log(_products)
-      dispatch(slice.actions.getProductsSuccess(_products));
+      const contractService = getContractService();
+
+      // First try to find in cache
+      if (onChainCache.launches.length > 0) {
+        const launch = onChainCache.launches.find(
+          (l) => paramCase(l.name) === name || l.token === name
+        );
+
+        if (launch) {
+          const poolState = onChainCache.poolStates.get(launch.pool) || null;
+
+          // Fetch metadata
+          let metadata: TokenMetadata | null = null;
+          try {
+            const supabaseService = getSupabaseService();
+            metadata = await supabaseService.getTokenMetadata(launch.token);
+          } catch (err) {
+            console.warn('Failed to fetch metadata:', err);
+          }
+
+          const product = convertLaunchToProduct(launch, poolState, metadata, 0);
+          dispatch(slice.actions.getProductSuccess(product));
+          return;
+        }
+      }
+
+      // Fetch all launches and find the matching one
+      const launches = await contractService.getAllLaunches();
+      const launch = launches.find((l) => paramCase(l.name) === name || l.token === name);
+
+      if (!launch) {
+        throw new Error(`Token not found: ${name}`);
+      }
+
+      // Fetch pool state
+      let poolState: PoolState | null = null;
+      try {
+        poolState = await contractService.getPoolState(launch.pool);
+      } catch (err) {
+        console.error('Failed to fetch pool state:', err);
+      }
+
+      // Fetch metadata
+      let metadata: TokenMetadata | null = null;
+      try {
+        const supabaseService = getSupabaseService();
+        metadata = await supabaseService.getTokenMetadata(launch.token);
+      } catch (err) {
+        console.warn('Failed to fetch metadata:', err);
+      }
+
+      const product = convertLaunchToProduct(launch, poolState, metadata, 0);
+      dispatch(slice.actions.getProductSuccess(product));
     } catch (error) {
+      console.error(error);
       dispatch(slice.actions.hasError(error));
     }
   };
@@ -216,27 +457,33 @@ export function getProducts() {
 
 // ----------------------------------------------------------------------
 
-export function getProduct(name: string) {
+/**
+ * Subscribe to new launch events for real-time updates
+ * Requirements: 3.4
+ */
+export function subscribeToNewLaunches() {
   return async (dispatch: Dispatch) => {
-    dispatch(slice.actions.startLoading());
-    try {
-      // Find product from mock data by matching the slug (name parameter) to product name
-      const _product = DN404Inprogress.products.find(
-        (p: any) => paramCase(p.name) === name
-      );
-      
-      if (!_product) {
-        throw new Error(`Product not found: ${name}`);
+    // Note: Real-time event subscription would require WebSocket connection
+    // to Starknet node or indexer service. For now, we use polling.
+    console.log('Real-time subscription not yet implemented - using polling');
+
+    // Poll every 30 seconds for new launches
+    const pollInterval = setInterval(async () => {
+      try {
+        const contractService = getContractService();
+        const currentCount = onChainCache.launches.length;
+        const newCount = await contractService.getTotalLaunches();
+
+        if (Number(newCount) > currentCount) {
+          // New launches detected, refresh the list
+          dispatch(getProducts(true) as any);
+        }
+      } catch (err) {
+        console.error('Polling error:', err);
       }
-      
-      // Add images and cover URL
-      _product.images = [randomInArray(DN404Medias),randomInArray(DN404Medias),randomInArray(DN404Medias),randomInArray(DN404Medias),randomInArray(DN404Medias),randomInArray(DN404Medias)]
-      _product.coverUrl = randomInArray(DN404Medias)
-      
-      dispatch(slice.actions.getProductSuccess(_product));
-    } catch (error) {
-      console.error(error);
-      dispatch(slice.actions.hasError(error));
-    }
+    }, 30000);
+
+    // Return cleanup function
+    return () => clearInterval(pollInterval);
   };
 }

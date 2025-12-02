@@ -30,7 +30,7 @@ export function WalletButton() {
     shortAddress, 
     connector,
     connect, 
-    disconnect 
+    disconnect,
   } = useWallet();
 
   const { stealthAddresses } = useStealthAddress();

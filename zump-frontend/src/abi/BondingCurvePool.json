@@ -1,0 +1,309 @@
+[
+  {
+    "type": "struct",
+    "name": "core::integer::u256",
+    "members": [
+      { "name": "low", "type": "core::integer::u128" },
+      { "name": "high", "type": "core::integer::u128" }
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "PoolState",
+    "members": [
+      { "name": "token", "type": "core::starknet::contract_address::ContractAddress" },
+      { "name": "quote_token", "type": "core::starknet::contract_address::ContractAddress" },
+      { "name": "tokens_sold", "type": "core::integer::u256" },
+      { "name": "reserve_balance", "type": "core::integer::u256" },
+      { "name": "migrated", "type": "core::bool" }
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "G1ProofPoint",
+    "members": [
+      { "name": "x", "type": "core::felt252" },
+      { "name": "y", "type": "core::felt252" }
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "G2ProofPoint",
+    "members": [
+      { "name": "x0", "type": "core::felt252" },
+      { "name": "x1", "type": "core::felt252" },
+      { "name": "y0", "type": "core::felt252" },
+      { "name": "y1", "type": "core::felt252" }
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "ZKProof",
+    "members": [
+      { "name": "public_input_hash", "type": "core::felt252" },
+      { "name": "merkle_root", "type": "core::felt252" },
+      { "name": "nullifier_hash", "type": "core::felt252" },
+      { "name": "proof_a", "type": "G1ProofPoint" },
+      { "name": "proof_b", "type": "G2ProofPoint" },
+      { "name": "proof_c", "type": "G1ProofPoint" },
+      { "name": "proof_type", "type": "core::integer::u8" },
+      { "name": "timestamp", "type": "core::integer::u64" }
+    ]
+  },
+  {
+    "type": "constructor",
+    "name": "constructor",
+    "inputs": [
+      { "name": "token", "type": "core::starknet::contract_address::ContractAddress" },
+      { "name": "quote_token", "type": "core::starknet::contract_address::ContractAddress" },
+      { "name": "creator", "type": "core::starknet::contract_address::ContractAddress" },
+      { "name": "protocol_config", "type": "core::starknet::contract_address::ContractAddress" },
+      { "name": "base_price", "type": "core::integer::u256" },
+      { "name": "slope", "type": "core::integer::u256" },
+      { "name": "max_supply", "type": "core::integer::u256" }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "get_current_price",
+    "inputs": [],
+    "outputs": [{ "type": "core::integer::u256" }],
+    "state_mutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "get_state",
+    "inputs": [],
+    "outputs": [{ "type": "PoolState" }],
+    "state_mutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "token",
+    "inputs": [],
+    "outputs": [{ "type": "core::starknet::contract_address::ContractAddress" }],
+    "state_mutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "quote_token",
+    "inputs": [],
+    "outputs": [{ "type": "core::starknet::contract_address::ContractAddress" }],
+    "state_mutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "creator",
+    "inputs": [],
+    "outputs": [{ "type": "core::starknet::contract_address::ContractAddress" }],
+    "state_mutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "base_price",
+    "inputs": [],
+    "outputs": [{ "type": "core::integer::u256" }],
+    "state_mutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "slope",
+    "inputs": [],
+    "outputs": [{ "type": "core::integer::u256" }],
+    "state_mutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "max_supply",
+    "inputs": [],
+    "outputs": [{ "type": "core::integer::u256" }],
+    "state_mutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "tokens_sold",
+    "inputs": [],
+    "outputs": [{ "type": "core::integer::u256" }],
+    "state_mutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "reserve_balance",
+    "inputs": [],
+    "outputs": [{ "type": "core::integer::u256" }],
+    "state_mutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "migrated",
+    "inputs": [],
+    "outputs": [{ "type": "core::bool" }],
+    "state_mutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "is_private_trades_enabled",
+    "inputs": [],
+    "outputs": [{ "type": "core::bool" }],
+    "state_mutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "get_zk_proof_verifier",
+    "inputs": [],
+    "outputs": [{ "type": "core::starknet::contract_address::ContractAddress" }],
+    "state_mutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "get_nullifier_registry",
+    "inputs": [],
+    "outputs": [{ "type": "core::starknet::contract_address::ContractAddress" }],
+    "state_mutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "get_factory",
+    "inputs": [],
+    "outputs": [{ "type": "core::starknet::contract_address::ContractAddress" }],
+    "state_mutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "get_launch_id",
+    "inputs": [],
+    "outputs": [{ "type": "core::integer::u256" }],
+    "state_mutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "set_zk_proof_verifier",
+    "inputs": [{ "name": "verifier", "type": "core::starknet::contract_address::ContractAddress" }],
+    "outputs": [],
+    "state_mutability": "external"
+  },
+  {
+    "type": "function",
+    "name": "set_nullifier_registry",
+    "inputs": [{ "name": "registry", "type": "core::starknet::contract_address::ContractAddress" }],
+    "outputs": [],
+    "state_mutability": "external"
+  },
+  {
+    "type": "function",
+    "name": "set_private_trades_enabled",
+    "inputs": [{ "name": "enabled", "type": "core::bool" }],
+    "outputs": [],
+    "state_mutability": "external"
+  },
+  {
+    "type": "function",
+    "name": "set_factory",
+    "inputs": [
+      { "name": "factory", "type": "core::starknet::contract_address::ContractAddress" },
+      { "name": "launch_id", "type": "core::integer::u256" }
+    ],
+    "outputs": [],
+    "state_mutability": "external"
+  },
+  {
+    "type": "function",
+    "name": "buy",
+    "inputs": [{ "name": "amount_tokens", "type": "core::integer::u256" }],
+    "outputs": [],
+    "state_mutability": "external"
+  },
+  {
+    "type": "function",
+    "name": "sell",
+    "inputs": [{ "name": "amount_tokens", "type": "core::integer::u256" }],
+    "outputs": [],
+    "state_mutability": "external"
+  },
+  {
+    "type": "function",
+    "name": "private_buy",
+    "inputs": [
+      { "name": "amount_tokens", "type": "core::integer::u256" },
+      { "name": "proof", "type": "ZKProof" },
+      { "name": "commitment", "type": "core::felt252" }
+    ],
+    "outputs": [],
+    "state_mutability": "external"
+  },
+  {
+    "type": "function",
+    "name": "private_sell",
+    "inputs": [
+      { "name": "amount_tokens", "type": "core::integer::u256" },
+      { "name": "proof", "type": "ZKProof" },
+      { "name": "nullifier", "type": "core::felt252" }
+    ],
+    "outputs": [],
+    "state_mutability": "external"
+  },
+  {
+    "type": "function",
+    "name": "set_migrated",
+    "inputs": [],
+    "outputs": [],
+    "state_mutability": "external"
+  },
+  {
+    "type": "function",
+    "name": "is_commitment_valid",
+    "inputs": [{ "name": "commitment", "type": "core::felt252" }],
+    "outputs": [{ "type": "core::bool" }],
+    "state_mutability": "view"
+  },
+  {
+    "type": "event",
+    "name": "Buy",
+    "kind": "struct",
+    "members": [
+      { "name": "buyer", "type": "core::starknet::contract_address::ContractAddress", "kind": "key" },
+      { "name": "amount_tokens", "type": "core::integer::u256", "kind": "data" },
+      { "name": "cost_quote", "type": "core::integer::u256", "kind": "data" },
+      { "name": "fee_quote", "type": "core::integer::u256", "kind": "data" }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "Sell",
+    "kind": "struct",
+    "members": [
+      { "name": "seller", "type": "core::starknet::contract_address::ContractAddress", "kind": "key" },
+      { "name": "amount_tokens", "type": "core::integer::u256", "kind": "data" },
+      { "name": "refund_quote", "type": "core::integer::u256", "kind": "data" },
+      { "name": "fee_quote", "type": "core::integer::u256", "kind": "data" }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "Migrated",
+    "kind": "struct",
+    "members": [
+      { "name": "pool", "type": "core::starknet::contract_address::ContractAddress", "kind": "key" }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "PrivateBuy",
+    "kind": "struct",
+    "members": [
+      { "name": "commitment", "type": "core::felt252", "kind": "key" },
+      { "name": "amount_tokens", "type": "core::integer::u256", "kind": "data" },
+      { "name": "price", "type": "core::integer::u256", "kind": "data" }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "PrivateSell",
+    "kind": "struct",
+    "members": [
+      { "name": "commitment", "type": "core::felt252", "kind": "key" },
+      { "name": "amount_tokens", "type": "core::integer::u256", "kind": "data" },
+      { "name": "price", "type": "core::integer::u256", "kind": "data" }
+    ]
+  }
+]

@@ -6,7 +6,6 @@
 
 import { useCallback, useMemo } from 'react';
 import { useAccount, useConnect, useDisconnect } from '@starknet-react/core';
-import { connect, disconnect as starknetkitDisconnect } from 'starknetkit';
 
 export interface WalletState {
   address: string | null;
@@ -25,7 +24,7 @@ export interface UseWalletReturn extends WalletState {
 
 /**
  * Custom hook for Starknet wallet connection management
- * Supports ArgentX, Braavos, and WebWallet
+ * Supports ArgentX and Braavos
  */
 export function useWallet(): UseWalletReturn {
   const { address, isConnected, chainId, connector, status } = useAccount();
@@ -41,25 +40,14 @@ export function useWallet(): UseWalletReturn {
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
   }, [address]);
 
-  // Connect wallet using StarknetKit modal
+  // Connect wallet - use first available connector
   const handleConnect = useCallback(async () => {
     try {
-      const result = await connect({
-        modalMode: 'alwaysAsk',
-        modalTheme: 'dark',
-        dappName: 'Zump.fun',
-        projectId: 'zump-fun-privacy-launchpad',
-      });
-
-      if (result && result.connector) {
-        // Find matching connector from starknet-react
-        const matchingConnector = connectors.find(
-          (c: { id?: string; name?: string }) => c.id === result.connector?.id || c.name === result.connector?.name
-        );
-        
-        if (matchingConnector) {
-          await connectAsync({ connector: matchingConnector });
-        }
+      // Try to connect with the first available connector (ArgentX or Braavos)
+      if (connectors.length > 0) {
+        await connectAsync({ connector: connectors[0] });
+      } else {
+        console.error('No connectors available');
       }
     } catch (error) {
       console.error('Failed to connect wallet:', error);
@@ -71,7 +59,6 @@ export function useWallet(): UseWalletReturn {
   const handleDisconnect = useCallback(async () => {
     try {
       await disconnectAsync();
-      await starknetkitDisconnect();
       // Clear any stored session data
       if (typeof window !== 'undefined') {
         localStorage.removeItem('starknet_wallet_connected');
@@ -84,7 +71,7 @@ export function useWallet(): UseWalletReturn {
 
   return {
     address: address ? address.toString() : null,
-    isConnected,
+    isConnected: isConnected ?? false,
     isConnecting,
     chainId,
     connector: connector?.name || null,

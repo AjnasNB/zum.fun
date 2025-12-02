@@ -68,7 +68,7 @@ export function useStealthAddress(): UseStealthAddressReturn {
 
   const { contract } = useContract({
     abi: STEALTH_ABI,
-    address: STEALTH_CONTRACT_ADDRESS,
+    address: STEALTH_CONTRACT_ADDRESS as `0x${string}`,
   });
 
   const { sendAsync } = useSendTransaction({});
@@ -80,6 +80,7 @@ export function useStealthAddress(): UseStealthAddressReturn {
     } else {
       setStealthAddresses([]);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletAddress, isConnected]);
 
   // Load stealth addresses from localStorage
@@ -112,7 +113,7 @@ export function useStealthAddress(): UseStealthAddressReturn {
 
   // Generate a new stealth address
   const generateStealthAddress = useCallback(async (): Promise<StealthAddress | null> => {
-    if (!isConnected || !walletAddress || !contract) {
+    if (!isConnected || !walletAddress) {
       setError('Wallet not connected');
       return null;
     }
@@ -126,18 +127,9 @@ export function useStealthAddress(): UseStealthAddressReturn {
       const viewingPubkey = generateRandomFelt();
       const ephemeralRandom = generateRandomFelt();
 
-      // Call the contract to generate stealth address
-      const result = await sendAsync([
-        {
-          contractAddress: STEALTH_CONTRACT_ADDRESS,
-          entrypoint: 'generate_stealth_address',
-          calldata: [spendingPubkey, viewingPubkey, ephemeralRandom],
-        },
-      ]);
-
-      // For now, create a local stealth address (in production, parse from tx result)
+      // For now, create a local stealth address (in production, call contract)
       const newStealthAddress: StealthAddress = {
-        address: generateLocalStealthAddress(walletAddress, stealthAddresses.length),
+        address: generateLocalStealthAddress(walletAddress.toString(), stealthAddresses.length),
         viewTag: generateViewTag(viewingPubkey, ephemeralRandom),
         ephemeralPubkey: ephemeralRandom,
         createdAt: Date.now(),
@@ -156,7 +148,7 @@ export function useStealthAddress(): UseStealthAddressReturn {
     } finally {
       setIsGenerating(false);
     }
-  }, [isConnected, walletAddress, contract, sendAsync, stealthAddresses, saveStealthAddresses]);
+  }, [isConnected, walletAddress, stealthAddresses, saveStealthAddresses]);
 
   // Remove a stealth address
   const removeStealthAddress = useCallback((address: string) => {

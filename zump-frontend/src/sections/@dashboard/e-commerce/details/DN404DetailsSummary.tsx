@@ -1,19 +1,23 @@
 import { sentenceCase } from 'change-case';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 // form
 import { useForm } from 'react-hook-form';
 // @mui
 import {
+  Alert,
   Button,
+  CircularProgress,
   Divider,
   Grid,
   IconButton,
   InputAdornment,
   LinearProgress,
+  Slider,
   Stack,
   Tab,
   Tabs,
+  TextField,
   Typography,
 } from '@mui/material';
 // routes
@@ -24,6 +28,7 @@ import { Notpump_DEFINE_FAIRLAUNCH } from 'src/descriptions/DN404';
 import useResponsive from 'src/hooks/useResponsive';
 import { PATH_DASHBOARD } from '../../../../routes/paths';
 // utils
+import { formatBigIntWithDecimals, toBigIntWithDecimals } from '../../../../utils/bondingCurveUtils';
 // @types
 import { ICheckoutCartItem, IDN404MetaData } from '../../../../@types/DN404';
 // _mock
@@ -32,6 +37,8 @@ import { _socials } from '../../../../_mock/arrays';
 import FormProvider, { RHFTextField } from '../../../../components/hook-form';
 import Iconify from '../../../../components/iconify';
 import Label from '../../../../components/label';
+// hooks
+import { useTrading } from '../../../../hooks/useTrading';
 // @mui
 // utils
 import { bgGradient } from '../../../../utils/cssStyles';
@@ -102,17 +109,33 @@ interface FormValuesProps extends Omit<ICheckoutCartItem, 'colors'> {
   colors: string;
 }
 
+// Constants
+const SLIPPAGE_OPTIONS = [0.5, 1, 2, 5];
+const DEFAULT_SLIPPAGE = 1;
+const DECIMALS = 18;
+
 type Props = {
   product: IDN404MetaData;
   cart: ICheckoutCartItem[];
   onAddCart: (cartItem: ICheckoutCartItem) => void;
   onGotoStep: (step: number) => void;
+  // On-chain trading props
+  poolAddress?: string;
+  tokenAddress?: string;
+  currentPrice?: bigint;
+  isMigrated?: boolean;
+  onTradeSuccess?: () => void;
 };
 export default function DN404DetailsSummary({
   cart,
   product,
   onAddCart,
   onGotoStep,
+  poolAddress,
+  tokenAddress,
+  currentPrice,
+  isMigrated = false,
+  onTradeSuccess,
   ...other
 }: Props) {
   const navigate = useNavigate();
@@ -191,6 +214,155 @@ export default function DN404DetailsSummary({
     }
   };
 
+  // ===========================================
+  // On-Chain Trading State & Logic
+  // Requirements: 5.3, 6.3, 6.4
+  // ===========================================
+  
+  const [tradeAmount, setTradeAmount] = useState<string>('');
+  const [slippage, setSlippage] = useState<number>(DEFAULT_SLIPPAGE);
+  const [showSlippageSettings, setShowSlippageSettings] = useState(false);
+  const [calculatedValue, setCalculatedValue] = useState<bigint | null>(null);
+  const [isCalculatingValue, setIsCalculatingValue] = useState(false);
+  const [currentTabTrade, setCurrentTabTrade] = useState<'trade' | 'derivative'>('trade');
+
+  // Use trading hook if pool and token addresses are provided
+  const tradingEnabled = Boolean(poolAddress && tokenAddress);
+  
+  const {
+    getBuyCost,
+    getSellReturn,
+    buy,
+    sell,
+    isBuying,
+    isSelling,
+    error: tradingError,
+    clearError,
+    userTokenBalance,
+    userQuoteBalance,
+    refreshBalances,
+  } = useTrading({
+    poolAddress: poolAddress || '',
+    tokenAddress: tokenAddress || '',
+    onSuccess: () => {
+      setTradeAmount('');
+      setCalculatedValue(null);
+      onTradeSuccess?.();
+    },
+  });
+
+  // Refresh balances on mount when trading is enabled
+  useEffect(() => {
+    if (tradingEnabled) {
+      refreshBalances();
+    }
+  }, [tradingEnabled, refreshBalances]);
+
+  // Calculate cost/return when amount changes
+  useEffect(() => {
+    if (!tradingEnabled) return;
+    
+    const calculateValue = async () => {
+      if (!tradeAmount || parseFloat(tradeAmount) <= 0) {
+        setCalculatedValue(null);
+        return;
+      }
+
+      setIsCalculatingValue(true);
+      try {
+        const amountBigInt = toBigIntWithDecimals(tradeAmount, DECIMALS);
+        
+        if (currentTabTrade === 'trade') {
+          // For buy tab
+          const cost = await getBuyCost(amountBigInt);
+          setCalculatedValue(cost);
+        }
+      } catch (err) {
+        console.error('Failed to calculate value:', err);
+        setCalculatedValue(null);
+      } finally {
+        setIsCalculatingValue(false);
+      }
+    };
+
+    const timeoutId = setTimeout(calculateValue, 300);
+    return () => clearTimeout(timeoutId);
+  }, [tradeAmount, currentTabTrade, tradingEnabled, getBuyCost]);
+
+  // Handle trade amount change
+  const handleTradeAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    if (value === '' || /^\d*\.?\d*$/.test(value)) {
+      setTradeAmount(value);
+      clearError();
+    }
+  };
+
+  // Handle max button click
+  const handleMaxClick = () => {
+    if (userQuoteBalance) {
+      setTradeAmount(formatBigIntWithDecimals(userQuoteBalance, DECIMALS, 6));
+    }
+  };
+
+  // Handle buy execution
+  // Requirements: 5.2, 5.3
+  const handleBuy = async () => {
+    if (!tradeAmount || parseFloat(tradeAmount) <= 0 || !tradingEnabled) return;
+
+    const amountBigInt = toBigIntWithDecimals(tradeAmount, DECIMALS);
+    const slippageMultiplier = BigInt(Math.floor((100 + slippage) * 100));
+    const slippageDivisor = BigInt(10000);
+
+    try {
+      const maxCost = calculatedValue 
+        ? (calculatedValue * slippageMultiplier) / slippageDivisor
+        : undefined;
+      await buy(amountBigInt, maxCost);
+    } catch (err) {
+      console.error('Buy failed:', err);
+    }
+  };
+
+  // Handle sell execution
+  // Requirements: 6.2, 6.3, 6.4
+  const handleSell = async () => {
+    if (!tradeAmount || parseFloat(tradeAmount) <= 0 || !tradingEnabled) return;
+
+    const amountBigInt = toBigIntWithDecimals(tradeAmount, DECIMALS);
+    const minSlippageMultiplier = BigInt(Math.floor((100 - slippage) * 100));
+    const slippageDivisor = BigInt(10000);
+
+    try {
+      const expectedReturn = await getSellReturn(amountBigInt);
+      const minReturn = (expectedReturn * minSlippageMultiplier) / slippageDivisor;
+      await sell(amountBigInt, minReturn);
+    } catch (err) {
+      console.error('Sell failed:', err);
+    }
+  };
+
+  // Check if sell is disabled (no balance)
+  // Requirements: 6.4
+  const isSellDisabled = useMemo(() => {
+    if (isMigrated) return true;
+    if (!tradingEnabled) return false; // Fall back to mock behavior
+    if (userTokenBalance === null || userTokenBalance === BigInt(0)) return true;
+    if (!tradeAmount || parseFloat(tradeAmount) <= 0) return true;
+    
+    const amountBigInt = toBigIntWithDecimals(tradeAmount, DECIMALS);
+    return amountBigInt > userTokenBalance;
+  }, [isMigrated, tradingEnabled, userTokenBalance, tradeAmount]);
+
+  // Check if buy is disabled
+  const isBuyDisabled = useMemo(() => {
+    if (isMigrated) return true;
+    if (!tradingEnabled) return false; // Fall back to mock behavior
+    if (!tradeAmount || parseFloat(tradeAmount) <= 0) return true;
+    if (isBuying || isSelling) return true;
+    return false;
+  }, [isMigrated, tradingEnabled, tradeAmount, isBuying, isSelling]);
+
   const theme = useTheme();
   const isDesktop = useResponsive('up', 'md');
 
@@ -205,8 +377,6 @@ export default function DN404DetailsSummary({
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const [selectedImage, setSelectedImage] = useState<number>(-1);
-
-  const [currentTabTrade, setCurrentTabTrade] = useState<'trade' | 'derivative'>('trade');
 
   const imagesLightbox = product.images.map((img) => ({ src: img }));
 
@@ -243,93 +413,206 @@ export default function DN404DetailsSummary({
     carousel1.current?.slickGoTo(currentIndex);
   }, [currentIndex]);
 
+  const tokenSymbol = product.name.split(' ')[0].toUpperCase();
+  
   const TABS = [
     {
       value: 'trade',
       label: 'Trade',
       component: (
         <Stack>
+          {/* Migrated Warning - Requirements: 6.5 */}
+          {isMigrated && (
+            <Alert 
+              severity="warning" 
+              sx={{ mb: 2 }}
+              action={
+                <Button 
+                  color="inherit" 
+                  size="small"
+                  onClick={() => window.open('https://app.avnu.fi', '_blank')}
+                >
+                  DEX&apos;e Git
+                </Button>
+              }
+            >
+              Bu havuz DEX&apos;e taşınmış. Lütfen DEX üzerinden işlem yapın.
+            </Alert>
+          )}
+
+          {/* Trading Error Display */}
+          {tradingError && (
+            <Alert 
+              severity="error" 
+              sx={{ mb: 2 }}
+              onClose={clearError}
+            >
+              {tradingError.message}
+            </Alert>
+          )}
+
           <Stack spacing={0.5}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
               <Typography variant="subtitle2">
-                {product.name.split(' ')[0].toUpperCase()} / ETH
+                {tokenSymbol} / ETH
               </Typography>
-              <LinearProgress
-                variant="determinate"
-                value={Number(Math.random().toFixed(2)) * 100}
-                sx={{
-                  mx: 2,
-                  flexGrow: 1,
-                  mr: 0.5,
-                }}
-              />
+              {currentPrice !== undefined && currentPrice !== null && (
+                <Typography variant="caption" color="text.secondary">
+                  Price: {formatBigIntWithDecimals(currentPrice, DECIMALS, 8)} ETH
+                </Typography>
+              )}
             </Stack>
 
+            {/* Token Amount Input */}
             <Stack spacing={1}>
               <Typography
                 variant="caption"
                 component="div"
                 sx={{ textAlign: 'right', color: 'text.secondary', cursor: 'pointer' }}
+                onClick={handleMaxClick}
               >
-                ETH Balance: 1,23
+                ETH Balance: {tradingEnabled && userQuoteBalance 
+                  ? formatBigIntWithDecimals(userQuoteBalance, DECIMALS, 4) 
+                  : '0.00'}
               </Typography>
-              <RHFTextField
+              <TextField
                 size="small"
-                type="number"
-                name={`items[${0}].price`}
-                value={0.001}
-                label="WETH amount"
+                type="text"
+                value={tradeAmount}
+                onChange={handleTradeAmountChange}
+                label={`${tokenSymbol} amount`}
                 placeholder="0"
-                onChange={(event) => {}}
+                disabled={isMigrated}
                 InputProps={{
-                  startAdornment: <InputAdornment position="start">-</InputAdornment>,
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Button 
+                        size="small" 
+                        onClick={handleMaxClick}
+                        disabled={isMigrated}
+                      >
+                        MAX
+                      </Button>
+                    </InputAdornment>
+                  ),
                 }}
                 sx={{ width: '100%' }}
               />
             </Stack>
+
+            {/* Swap Icon */}
             <Stack spacing={1} sx={{ pt: 1 }}>
               <div style={{ width: '100%', textAlign: 'center' }}>
                 <IconButton sx={{ height: 40, width: 40 }}>⇅</IconButton>
               </div>
             </Stack>
+
+            {/* Calculated Cost/Return Display */}
             <Stack spacing={1}>
               <Typography
                 variant="caption"
                 component="div"
-                sx={{ textAlign: 'right', color: 'text.secondary', cursor: 'pointer' }}
+                sx={{ textAlign: 'right', color: 'text.secondary' }}
               >
-                {product.name.split(' ')[0].toUpperCase()} Balance: 15k
+                {tokenSymbol} Balance: {tradingEnabled && userTokenBalance 
+                  ? formatBigIntWithDecimals(userTokenBalance, DECIMALS, 2) 
+                  : '0'}
               </Typography>
-              <RHFTextField
+              <TextField
                 size="small"
-                type="number"
-                name={`items[${0}].price`}
-                value={12050}
-                label={`${product.name.split(' ')[0].toUpperCase()} amount`}
+                type="text"
+                value={calculatedValue ? formatBigIntWithDecimals(calculatedValue, DECIMALS, 6) : ''}
+                label="Cost (ETH)"
                 placeholder="0"
-                onChange={(event) => {}}
+                disabled
                 InputProps={{
-                  startAdornment: <InputAdornment position="start">+</InputAdornment>,
+                  readOnly: true,
+                  endAdornment: isCalculatingValue ? (
+                    <InputAdornment position="end">
+                      <CircularProgress size={16} />
+                    </InputAdornment>
+                  ) : null,
                 }}
                 sx={{ width: '100%' }}
               />
             </Stack>
+
+            {/* Slippage Settings */}
+            <Stack 
+              direction="row" 
+              alignItems="center" 
+              justifyContent="space-between"
+              sx={{ cursor: 'pointer', pt: 1 }}
+              onClick={() => setShowSlippageSettings(!showSlippageSettings)}
+            >
+              <Typography variant="caption" color="text.secondary">
+                Slippage Tolerance
+              </Typography>
+              <Stack direction="row" alignItems="center" spacing={0.5}>
+                <Typography variant="caption" fontWeight="bold">
+                  {slippage}%
+                </Typography>
+                <Iconify 
+                  icon={showSlippageSettings ? 'eva:chevron-up-fill' : 'eva:chevron-down-fill'} 
+                  width={16}
+                />
+              </Stack>
+            </Stack>
+
+            {showSlippageSettings && (
+              <Box sx={{ pt: 1 }}>
+                <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
+                  {SLIPPAGE_OPTIONS.map((option) => (
+                    <Button
+                      key={option}
+                      size="small"
+                      variant={slippage === option ? 'contained' : 'outlined'}
+                      onClick={() => setSlippage(option)}
+                      sx={{ minWidth: 40, fontSize: '0.7rem' }}
+                    >
+                      {option}%
+                    </Button>
+                  ))}
+                </Stack>
+                <Slider
+                  value={slippage}
+                  onChange={(_, value) => setSlippage(value as number)}
+                  min={0.1}
+                  max={10}
+                  step={0.1}
+                  size="small"
+                  valueLabelDisplay="auto"
+                  valueLabelFormat={(value) => `${value}%`}
+                />
+              </Box>
+            )}
           </Stack>
+
+          {/* Buy/Sell Buttons - Requirements: 5.3, 6.3, 6.4 */}
           <Stack direction="row" spacing={2} sx={{ pt: 2 }}>
             <Button
               fullWidth
-              disabled={isMaxQuantity}
+              disabled={isBuyDisabled}
               size="large"
               color="success"
               variant="contained"
-              onClick={handleAddCart}
+              onClick={tradingEnabled ? handleBuy : handleAddCart}
               sx={{ whiteSpace: 'nowrap' }}
+              startIcon={isBuying && <CircularProgress size={16} color="inherit" />}
             >
-              Buy
+              {isBuying ? 'Buying...' : 'Buy'}
             </Button>
 
-            <Button fullWidth color="error" size="large" type="submit" variant="contained">
-              Sell
+            <Button 
+              fullWidth 
+              color="error" 
+              size="large" 
+              variant="contained"
+              disabled={isSellDisabled}
+              onClick={tradingEnabled ? handleSell : undefined}
+              startIcon={isSelling && <CircularProgress size={16} color="inherit" />}
+            >
+              {isSelling ? 'Selling...' : (isSellDisabled && tradingEnabled ? 'No Balance' : 'Sell')}
             </Button>
           </Stack>
         </Stack>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
-import { useSignMessage } from 'wagmi';
+import { useAccount } from '@starknet-react/core';
 import { useNavigate } from 'react-router-dom';
 // @mui
 import {
@@ -30,10 +30,9 @@ type Props = {
 
 export default function InvoiceToolbar({ invoice }: Props) {
   const navigate = useNavigate();
+  const { address, isConnected } = useAccount();
 
   const [open, setOpen] = useState(false);
-
-   const { signMessageAsync } = useSignMessage();
 
   const handleOpen = () => {
     setOpen(true);
@@ -51,23 +50,24 @@ export default function InvoiceToolbar({ invoice }: Props) {
     try {
       const message = `Demo signature: mark invoice ${invoice.invoiceNumber} as paid on Zump.fun. This does NOT move real funds.`;
 
-      // Prefer ArgentX (StarkNet) if available for demo
+      // Use StarkNet wallet for signing
       const anyWindow = window as any;
-      if (anyWindow.starknet?.argentX) {
+      if (anyWindow.starknet) {
         await anyWindow.starknet.enable();
-
-        // Different ArgentX versions expose different APIs – keep this very loose for demo purposes
-        if (typeof anyWindow.starknet.argentX.signMessage === 'function') {
-          await anyWindow.starknet.argentX.signMessage(message);
-        } else if (typeof anyWindow.starknet.argentX.request === 'function') {
-          await anyWindow.starknet.argentX.request({
-            type: 'wallet_sign',
-            params: { message },
+        
+        // Try to sign with available StarkNet wallet
+        if (anyWindow.starknet.account?.signMessage) {
+          await anyWindow.starknet.account.signMessage({
+            domain: { name: 'Zump.fun', version: '1' },
+            types: { Message: [{ name: 'content', type: 'string' }] },
+            primaryType: 'Message',
+            message: { content: message },
           });
         }
       } else {
-        // Fallback: use EVM wallet via wagmi + Web3Modal
-        await signMessageAsync({ message });
+        // eslint-disable-next-line no-alert
+        alert('Please connect a StarkNet wallet (ArgentX or Braavos)');
+        return;
       }
 
       // eslint-disable-next-line no-alert
@@ -138,6 +138,7 @@ export default function InvoiceToolbar({ invoice }: Props) {
           startIcon={<Iconify icon="eva:checkmark-fill" />}
           sx={{ alignSelf: 'flex-end' }}
           onClick={handleMarkAsPaid}
+          disabled={!isConnected}
         >
           Mark as Paid
         </Button>

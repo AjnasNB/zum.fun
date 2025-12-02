@@ -163,7 +163,7 @@ export function BalanceAggregation({ compact = false }: BalanceAggregationProps)
             <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 1 }}>
               Desteklenen Tokenlar:
             </Typography>
-            <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+            <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
               {SUPPORTED_TOKENS.map(token => (
                 <Chip
                   key={token.symbol}

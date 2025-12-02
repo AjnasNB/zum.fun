@@ -14,6 +14,10 @@ const OPTIONS = [
   { value: 'newest', label: 'Newest' },
   { value: 'priceDesc', label: 'Price: High - Low' },
   { value: 'priceAsc', label: 'Price: Low - High' },
+  { value: 'marketCapDesc', label: 'Market Cap: High - Low' },
+  { value: 'marketCapAsc', label: 'Market Cap: Low - High' },
+  { value: 'progressDesc', label: 'Progress: High - Low' },
+  { value: 'progressAsc', label: 'Progress: Low - High' },
 ];
 
 function renderLabel(label: string) {
@@ -22,6 +26,10 @@ function renderLabel(label: string) {
     newest: 'Newest',
     priceDesc: 'Price: High - Low',
     priceAsc: 'Price: Low - High',
+    marketCapDesc: 'Market Cap: High - Low',
+    marketCapAsc: 'Market Cap: Low - High',
+    progressDesc: 'Progress: High - Low',
+    progressAsc: 'Progress: Low - High',
   }[label];
 }
 

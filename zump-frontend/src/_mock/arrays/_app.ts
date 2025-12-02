@@ -1,6 +1,9 @@
-import DN404MediasList from '../../DN404.media.json';
 import _mock from '../_mock';
-import { randomInArray, randomNumberRange } from '../utils';
+import { randomNumberRange } from '../utils';
+
+// Default placeholder image for app icons
+const DEFAULT_APP_ICON = '/assets/placeholder.svg';
+
 // ----------------------------------------------------------------------
 
 export const _appRelated = ['Jiran', 'Usop', 'Firon', 'Rades', 'Ports'].map((name, index) => ({
@@ -10,12 +13,7 @@ export const _appRelated = ['Jiran', 'Usop', 'Firon', 'Rades', 'Ports'].map((nam
   price: index === 0 || index === 2 || index === 4 ? 0 : _mock.number.price(index),
   rating: _mock.number.rating(index),
   review: randomNumberRange(999, 99999),
-  shortcut:
-    (name === 'Jiran' && randomInArray(DN404MediasList)) ||
-    (name === 'Usop' && randomInArray(DN404MediasList)) ||
-    (name === 'Firon' && randomInArray(DN404MediasList)) ||
-    (name === 'Rades' && randomInArray(DN404MediasList)) ||
-    randomInArray(DN404MediasList),
+  shortcut: DEFAULT_APP_ICON,
 }));
 
 // ----------------------------------------------------------------------

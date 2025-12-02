@@ -1,0 +1,238 @@
+[
+  {
+    "type": "impl",
+    "name": "PumpFactoryImpl",
+    "interface_name": "IPumpFactory"
+  },
+  {
+    "type": "struct",
+    "name": "core::integer::u256",
+    "members": [
+      { "name": "low", "type": "core::integer::u128" },
+      { "name": "high", "type": "core::integer::u128" }
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "PublicLaunchInfo",
+    "members": [
+      { "name": "token", "type": "core::starknet::contract_address::ContractAddress" },
+      { "name": "pool", "type": "core::starknet::contract_address::ContractAddress" },
+      { "name": "quote_token", "type": "core::starknet::contract_address::ContractAddress" },
+      { "name": "name", "type": "core::felt252" },
+      { "name": "symbol", "type": "core::felt252" },
+      { "name": "base_price", "type": "core::integer::u256" },
+      { "name": "slope", "type": "core::integer::u256" },
+      { "name": "max_supply", "type": "core::integer::u256" },
+      { "name": "created_at", "type": "core::integer::u64" },
+      { "name": "migrated", "type": "core::bool" }
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "LaunchInfo",
+    "members": [
+      { "name": "token", "type": "core::starknet::contract_address::ContractAddress" },
+      { "name": "pool", "type": "core::starknet::contract_address::ContractAddress" },
+      { "name": "quote_token", "type": "core::starknet::contract_address::ContractAddress" },
+      { "name": "creator", "type": "core::starknet::contract_address::ContractAddress" },
+      { "name": "name", "type": "core::felt252" },
+      { "name": "symbol", "type": "core::felt252" },
+      { "name": "base_price", "type": "core::integer::u256" },
+      { "name": "slope", "type": "core::integer::u256" },
+      { "name": "max_supply", "type": "core::integer::u256" },
+      { "name": "created_at", "type": "core::integer::u64" },
+      { "name": "migrated", "type": "core::bool" },
+      { "name": "migration_threshold", "type": "core::integer::u256" }
+    ]
+  },
+  {
+    "type": "interface",
+    "name": "IPumpFactory",
+    "items": [
+      {
+        "type": "function",
+        "name": "create_launch",
+        "inputs": [
+          { "name": "name", "type": "core::felt252" },
+          { "name": "symbol", "type": "core::felt252" },
+          { "name": "base_price", "type": "core::integer::u256" },
+          { "name": "slope", "type": "core::integer::u256" },
+          { "name": "max_supply", "type": "core::integer::u256" },
+          { "name": "stealth_creator", "type": "core::starknet::contract_address::ContractAddress" },
+          { "name": "migration_threshold", "type": "core::integer::u256" }
+        ],
+        "outputs": [
+          { "type": "(core::starknet::contract_address::ContractAddress, core::starknet::contract_address::ContractAddress)" }
+        ],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "register_launch",
+        "inputs": [
+          { "name": "token", "type": "core::starknet::contract_address::ContractAddress" },
+          { "name": "pool", "type": "core::starknet::contract_address::ContractAddress" },
+          { "name": "name", "type": "core::felt252" },
+          { "name": "symbol", "type": "core::felt252" },
+          { "name": "base_price", "type": "core::integer::u256" },
+          { "name": "slope", "type": "core::integer::u256" },
+          { "name": "max_supply", "type": "core::integer::u256" }
+        ],
+        "outputs": [{ "type": "core::integer::u256" }],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "register_anonymous_launch",
+        "inputs": [
+          { "name": "token", "type": "core::starknet::contract_address::ContractAddress" },
+          { "name": "pool", "type": "core::starknet::contract_address::ContractAddress" },
+          { "name": "quote_token", "type": "core::starknet::contract_address::ContractAddress" },
+          { "name": "name", "type": "core::felt252" },
+          { "name": "symbol", "type": "core::felt252" },
+          { "name": "base_price", "type": "core::integer::u256" },
+          { "name": "slope", "type": "core::integer::u256" },
+          { "name": "max_supply", "type": "core::integer::u256" },
+          { "name": "stealth_creator", "type": "core::starknet::contract_address::ContractAddress" },
+          { "name": "migration_threshold", "type": "core::integer::u256" }
+        ],
+        "outputs": [{ "type": "core::integer::u256" }],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "get_launch",
+        "inputs": [{ "name": "launch_id", "type": "core::integer::u256" }],
+        "outputs": [{ "type": "PublicLaunchInfo" }],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "get_launch_full",
+        "inputs": [{ "name": "launch_id", "type": "core::integer::u256" }],
+        "outputs": [{ "type": "LaunchInfo" }],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "total_launches",
+        "inputs": [],
+        "outputs": [{ "type": "core::integer::u256" }],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "mark_migrated",
+        "inputs": [{ "name": "launch_id", "type": "core::integer::u256" }],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "check_migration_threshold",
+        "inputs": [{ "name": "launch_id", "type": "core::integer::u256" }],
+        "outputs": [{ "type": "core::bool" }],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "owner",
+        "inputs": [],
+        "outputs": [{ "type": "core::starknet::contract_address::ContractAddress" }],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "stealth_generator",
+        "inputs": [],
+        "outputs": [{ "type": "core::starknet::contract_address::ContractAddress" }],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "liquidity_migration",
+        "inputs": [],
+        "outputs": [{ "type": "core::starknet::contract_address::ContractAddress" }],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "set_stealth_generator",
+        "inputs": [{ "name": "generator", "type": "core::starknet::contract_address::ContractAddress" }],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "set_liquidity_migration",
+        "inputs": [{ "name": "migration", "type": "core::starknet::contract_address::ContractAddress" }],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "set_quote_token",
+        "inputs": [{ "name": "quote_token", "type": "core::starknet::contract_address::ContractAddress" }],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "set_protocol_config",
+        "inputs": [{ "name": "config", "type": "core::starknet::contract_address::ContractAddress" }],
+        "outputs": [],
+        "state_mutability": "external"
+      }
+    ]
+  },
+  {
+    "type": "constructor",
+    "name": "constructor",
+    "inputs": [
+      { "name": "owner", "type": "core::starknet::contract_address::ContractAddress" }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "LaunchCreated",
+    "kind": "struct",
+    "members": [
+      { "name": "launch_id", "type": "core::integer::u256", "kind": "key" },
+      { "name": "token", "type": "core::starknet::contract_address::ContractAddress", "kind": "data" },
+      { "name": "pool", "type": "core::starknet::contract_address::ContractAddress", "kind": "data" },
+      { "name": "stealth_creator", "type": "core::starknet::contract_address::ContractAddress", "kind": "data" },
+      { "name": "migration_threshold", "type": "core::integer::u256", "kind": "data" }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "LaunchRegistered",
+    "kind": "struct",
+    "members": [
+      { "name": "launch_id", "type": "core::integer::u256", "kind": "key" },
+      { "name": "token", "type": "core::starknet::contract_address::ContractAddress", "kind": "data" },
+      { "name": "pool", "type": "core::starknet::contract_address::ContractAddress", "kind": "data" },
+      { "name": "creator", "type": "core::starknet::contract_address::ContractAddress", "kind": "data" }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "LaunchMigrated",
+    "kind": "struct",
+    "members": [
+      { "name": "launch_id", "type": "core::integer::u256", "kind": "key" }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "MigrationThresholdReached",
+    "kind": "struct",
+    "members": [
+      { "name": "launch_id", "type": "core::integer::u256", "kind": "key" },
+      { "name": "pool", "type": "core::starknet::contract_address::ContractAddress", "kind": "data" },
+      { "name": "reserve_balance", "type": "core::integer::u256", "kind": "data" },
+      { "name": "threshold", "type": "core::integer::u256", "kind": "data" }
+    ]
+  }
+]

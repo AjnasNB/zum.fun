@@ -1,14 +1,14 @@
 import { Helmet } from 'react-helmet-async';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import orderBy from 'lodash/orderBy';
 // form
 import { useForm } from 'react-hook-form';
 // @mui
 import { Container, Typography, Stack, Tooltip } from '@mui/material';
 // redux
-import {useLocales} from 'src/locales';
-import {DN404_DEFINE, Notpump_DEFINE_FAIRLAUNCH} from 'src/descriptions/DN404';
-import {Box} from '@mui/system';
+import { useLocales } from 'src/locales';
+import { DN404_DEFINE, Notpump_DEFINE_FAIRLAUNCH } from 'src/descriptions/DN404';
+import { Box } from '@mui/system';
 import Iconify from 'src/components/iconify';
 import { useDispatch, useSelector } from '../../redux/store';
 import { getProducts } from '../../redux/slices/DN404';
@@ -37,17 +37,17 @@ export default function DN404Fairlaunch() {
 
   const dispatch = useDispatch();
 
-  const { products, checkout } = useSelector((state) => state.product);
+  const { products, checkout, isLoading, error } = useSelector((state) => state.product);
 
   const [openFilter, setOpenFilter] = useState(false);
-  const {translate} = useLocales()
+  const { translate } = useLocales();
   const defaultValues = {
     gender: [],
     category: 'All',
     colors: [],
     priceRange: [0, 200],
     rating: '',
-    sortBy: 'featured',
+    sortBy: 'newest', // Default to newest for on-chain data
   };
 
   const methods = useForm<IDN404MetaDataFilter>({
@@ -72,8 +72,14 @@ export default function DN404Fairlaunch() {
 
   const dataFiltered = applyFilter(products, values);
 
+  // Fetch products on mount
   useEffect(() => {
     dispatch(getProducts());
+  }, [dispatch]);
+
+  // Retry handler for error state
+  const handleRetry = useCallback(() => {
+    dispatch(getProducts(true)); // Force refresh
   }, [dispatch]);
 
   const handleResetFilter = () => {
@@ -144,7 +150,12 @@ export default function DN404Fairlaunch() {
             )}
           </Stack>
 
-          <DN404List products={dataFiltered} loading={!products.length && isDefault} />
+          <DN404List 
+            products={dataFiltered} 
+            loading={isLoading} 
+            error={error}
+            onRetry={handleRetry}
+          />
 
           {/* <CartWidget totalItems={checkout.totalItems} /> */}
         </Container>
@@ -159,45 +170,64 @@ function applyFilter(products: IDN404MetaData[], filters: IDN404MetaDataFilter) 
   const { gender, category, colors, priceRange, rating, sortBy } = filters;
 
   const min = priceRange[0];
-
   const max = priceRange[1];
 
-  // SORT BY
-  if (sortBy === 'featured') {
-    products = orderBy(products, ['sold'], ['desc']);
-  }
+  // Create a copy to avoid mutating the original array
+  let filteredProducts = [...products];
 
-  if (sortBy === 'newest') {
-    products = orderBy(products, ['createdAt'], ['desc']);
-  }
-
-  if (sortBy === 'priceDesc') {
-    products = orderBy(products, ['price'], ['desc']);
-  }
-
-  if (sortBy === 'priceAsc') {
-    products = orderBy(products, ['price'], ['asc']);
+  // SORT BY - including new on-chain metrics
+  switch (sortBy) {
+    case 'featured':
+      filteredProducts = orderBy(filteredProducts, ['sold'], ['desc']);
+      break;
+    case 'newest':
+      filteredProducts = orderBy(filteredProducts, ['createdAt'], ['desc']);
+      break;
+    case 'priceDesc':
+      filteredProducts = orderBy(filteredProducts, ['price'], ['desc']);
+      break;
+    case 'priceAsc':
+      filteredProducts = orderBy(filteredProducts, ['price'], ['asc']);
+      break;
+    case 'marketCapDesc':
+      filteredProducts = orderBy(filteredProducts, ['marketCap'], ['desc']);
+      break;
+    case 'marketCapAsc':
+      filteredProducts = orderBy(filteredProducts, ['marketCap'], ['asc']);
+      break;
+    case 'progressDesc':
+      filteredProducts = orderBy(filteredProducts, ['bondingCurveProccess'], ['desc']);
+      break;
+    case 'progressAsc':
+      filteredProducts = orderBy(filteredProducts, ['bondingCurveProccess'], ['asc']);
+      break;
+    default:
+      filteredProducts = orderBy(filteredProducts, ['createdAt'], ['desc']);
   }
 
   // FILTER PRODUCTS
   if (gender.length) {
-    products = products.filter((product) => gender.includes(product.gender));
+    filteredProducts = filteredProducts.filter((product) => gender.includes(product.gender));
   }
 
   if (category !== 'All') {
-    products = products.filter((product) => product.category === category);
+    filteredProducts = filteredProducts.filter((product) => product.category === category);
   }
 
   if (colors.length) {
-    products = products.filter((product) => product.colors.some((color) => colors.includes(color)));
+    filteredProducts = filteredProducts.filter((product) =>
+      product.colors?.some((color) => colors.includes(color))
+    );
   }
 
   if (min !== 0 || max !== 200) {
-    products = products.filter((product) => product.price >= min && product.price <= max);
+    filteredProducts = filteredProducts.filter(
+      (product) => product.price >= min && product.price <= max
+    );
   }
 
   if (rating) {
-    products = products.filter((product) => {
+    filteredProducts = filteredProducts.filter((product) => {
       const convertRating = (value: string) => {
         if (value === 'up4Star') return 4;
         if (value === 'up3Star') return 3;
@@ -208,5 +238,5 @@ function applyFilter(products: IDN404MetaData[], filters: IDN404MetaDataFilter) 
     });
   }
 
-  return products;
+  return filteredProducts;
 }
