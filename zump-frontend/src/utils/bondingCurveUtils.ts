@@ -144,6 +144,7 @@ export const parseU256 = (value: unknown): bigint => {
     const obj = value as { low: unknown; high: unknown };
     const low = BigInt(String(obj.low));
     const high = BigInt(String(obj.high));
+    // eslint-disable-next-line no-bitwise
     return low + (high << BigInt(128));
   }
   
@@ -238,16 +239,12 @@ export const compareBigInt = (a: bigint, b: bigint): number => {
 /**
  * Get minimum of two bigints
  */
-export const minBigInt = (a: bigint, b: bigint): bigint => {
-  return a < b ? a : b;
-};
+export const minBigInt = (a: bigint, b: bigint): bigint => (a < b ? a : b);
 
 /**
  * Get maximum of two bigints
  */
-export const maxBigInt = (a: bigint, b: bigint): bigint => {
-  return a > b ? a : b;
-};
+export const maxBigInt = (a: bigint, b: bigint): bigint => (a > b ? a : b);
 
 export default {
   calculatePrice,

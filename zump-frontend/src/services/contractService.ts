@@ -4,7 +4,7 @@
  * Requirements: 1.2, 1.3, 1.4
  */
 
-import { Contract, Account, Provider, RpcProvider, CallData, cairo, shortString } from 'starknet';
+import { Contract, Account, RpcProvider, CallData, cairo, shortString } from 'starknet';
 import { PUMP_FACTORY_ABI, BONDING_CURVE_POOL_ABI, MEMECOIN_TOKEN_ABI } from '../abi';
 import { getContractConfig, getContractAddresses, isValidContractAddress, NetworkId } from '../config/contracts';
 
@@ -71,8 +71,11 @@ export type TransactionStatus = 'pending' | 'confirmed' | 'failed';
 
 export class ContractService {
   private provider: RpcProvider;
+
   private account: Account | null = null;
+
   private network: NetworkId;
+
   private pumpFactoryContract: Contract | null = null;
 
   constructor(network?: NetworkId) {
@@ -226,8 +229,10 @@ export class ContractService {
     const launches: PublicLaunchInfo[] = [];
     
     // Fetch each launch
-    for (let i = BigInt(0); i < count; i = i + BigInt(1)) {
+    // eslint-disable-next-line no-restricted-syntax
+    for (let i = BigInt(0); i < count; i += BigInt(1)) {
       try {
+        // eslint-disable-next-line no-await-in-loop
         const launch = await this.getLaunch(i);
         launches.push(launch);
       } catch (error) {
@@ -508,6 +513,7 @@ export class ContractService {
   /**
    * Parse u256 from contract response
    */
+  // eslint-disable-next-line class-methods-use-this
   private parseU256(value: any): bigint {
     if (typeof value === 'bigint') {
       return value;
@@ -515,6 +521,7 @@ export class ContractService {
     if (typeof value === 'object' && 'low' in value && 'high' in value) {
       const low = BigInt(value.low.toString());
       const high = BigInt(value.high.toString());
+      // eslint-disable-next-line no-bitwise
       return low + (high << BigInt(128));
     }
     return BigInt(value.toString());

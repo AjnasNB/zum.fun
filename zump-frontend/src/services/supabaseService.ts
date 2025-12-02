@@ -4,6 +4,8 @@
  * Requirements: 8.2, 8.3, 8.5
  */
 
+/* eslint-disable max-classes-per-file */
+
 import { SupabaseClient } from '@supabase/supabase-js';
 import { getSupabaseClient, isSupabaseConfigured, SUPABASE_CONFIG } from '../config/supabase';
 import {

@@ -81,6 +81,7 @@ const SELL_EVENT_KEY = '0x0'; // Will be populated from actual events
 function parseU256FromEvent(low: string, high: string): bigint {
   const lowBigInt = BigInt(low);
   const highBigInt = BigInt(high);
+  // eslint-disable-next-line no-bitwise
   return lowBigInt + (highBigInt << BigInt(128));
 }
 
@@ -209,7 +210,9 @@ export function useTradeHistory(options: UseTradeHistoryOptions): UseTradeHistor
 
       const parsedTrades: ParsedTradeEvent[] = [];
       
-      for (const event of eventsResponse.events) {
+      // eslint-disable-next-line no-restricted-syntax
+      for (let i = 0; i < eventsResponse.events.length; i += 1) {
+        const event = eventsResponse.events[i];
         const txHash = event.transaction_hash;
         const blockNumber = event.block_number || null;
         const eventIndex = parsedTrades.length;
@@ -230,6 +233,7 @@ export function useTradeHistory(options: UseTradeHistoryOptions): UseTradeHistor
             let timestamp = new Date();
             if (blockNumber) {
               try {
+                // eslint-disable-next-line no-await-in-loop
                 const block = await provider.getBlock(blockNumber);
                 if (block.timestamp) {
                   timestamp = new Date(block.timestamp * 1000);
@@ -346,7 +350,9 @@ export function useTradeHistory(options: UseTradeHistoryOptions): UseTradeHistor
       const existingHashes = new Set(cachedTrades.map(t => t.txHash));
       
       const newTrades: ParsedTradeEvent[] = [];
-      for (const trade of chainTrades) {
+      // eslint-disable-next-line no-restricted-syntax
+      for (let i = 0; i < chainTrades.length; i += 1) {
+        const trade = chainTrades[i];
         if (!existingHashes.has(trade.txHash)) {
           allTrades.push(trade);
           newTrades.push(trade);
