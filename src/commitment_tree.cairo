@@ -21,13 +21,12 @@ struct MerkleProof {
 #[feature("deprecated_legacy_map")]
 #[feature("deprecated-starknet-consts")]
 mod CommitmentTree {
-    use super::{ContractAddress, TreeNode, MerkleProof, poseidon_hash_span};
+    use super::{ContractAddress, poseidon_hash_span};
     use starknet::storage::{
         StoragePointerReadAccess, StoragePointerWriteAccess,
         StorageMapReadAccess, StorageMapWriteAccess
     };
     use starknet::get_caller_address;
-    use starknet::get_block_timestamp;
     use core::array::ArrayTrait;
 
     const TREE_DEPTH: u32 = 20; // Supports 2^20 = 1M commitments
@@ -91,7 +90,7 @@ mod CommitmentTree {
         self.current_root_index.write(0);
         
         // Initialize zero values for empty tree
-        self.initialize_zero_values();
+        initialize_zero_values(ref self);
         
         // Set initial root to zero value at depth 0
         let zero_root = self.zero_values.read(0);
@@ -113,7 +112,7 @@ mod CommitmentTree {
     // Initialize zero values for empty Merkle tree
     fn initialize_zero_values(ref self: ContractState) {
         // Zero value at max depth (leaf level)
-        let mut zero = 0;
+        let mut zero: felt252 = 0;
         self.zero_values.write(TREE_DEPTH, zero);
         
         // Compute zero values for each level going up
@@ -155,7 +154,7 @@ mod CommitmentTree {
         self.next_leaf_index.write(leaf_index + 1);
         
         // Update Merkle root
-        let new_root = self.update_tree(commitment, leaf_index);
+        let new_root = update_tree(ref self, commitment, leaf_index);
         
         self.emit(LeafInserted {
             leaf: commitment,
@@ -183,7 +182,19 @@ mod CommitmentTree {
             }
             
             let commitment = *commitments.at(i);
-            self.insert_commitment(commitment);
+            
+            // Inline insert logic to avoid recursive external call
+            assert(commitment != 0, 'INVALID_COMMITMENT');
+            let leaf_index = self.next_leaf_index.read();
+            self.leaves.write(leaf_index, commitment);
+            self.next_leaf_index.write(leaf_index + 1);
+            let new_root = update_tree(ref self, commitment, leaf_index);
+            
+            self.emit(LeafInserted {
+                leaf: commitment,
+                leaf_index,
+                new_root,
+            });
             
             i += 1;
         };
@@ -213,12 +224,12 @@ mod CommitmentTree {
             let sibling = if is_right {
                 // Get left sibling
                 let sibling_index = current_index - 1;
-                self.get_node_hash(sibling_index, level + 1)
+                get_node_hash(@self, sibling_index, level + 1)
             } else {
                 // Get right sibling (or zero if doesn't exist)
                 let sibling_index = current_index + 1;
                 if sibling_index < self.next_leaf_index.read() {
-                    self.get_node_hash(sibling_index, level + 1)
+                    get_node_hash(@self, sibling_index, level + 1)
                 } else {
                     self.zero_values.read(level + 1)
                 }
@@ -344,7 +355,7 @@ mod CommitmentTree {
                 current_index + 1
             };
             
-            let sibling = self.get_node_hash(sibling_index, level + 1);
+            let sibling = get_node_hash(self, sibling_index, level + 1);
             proof.append(sibling);
             
             current_index = current_index / 2;

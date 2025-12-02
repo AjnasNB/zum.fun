@@ -110,7 +110,7 @@ mod ZKProofVerifier {
         let caller = get_caller_address();
         
         // Calculate proof hash
-        let proof_hash = self.hash_proof(@proof);
+        let proof_hash = hash_proof(@proof);
         
         // Check if already verified
         if self.verified_proofs.read(proof_hash) {
@@ -124,10 +124,10 @@ mod ZKProofVerifier {
 
         // Verify based on proof type
         let valid = match proof.proof_type {
-            1 => self.verify_buy_proof(@proof),
-            2 => self.verify_sell_proof(@proof),
-            3 => self.verify_transfer_proof(@proof),
-            4 => self.verify_launch_proof(@proof),
+            1 => verify_buy_proof(@proof),
+            2 => verify_sell_proof(@proof),
+            3 => verify_transfer_proof(@proof),
+            4 => verify_launch_proof(@proof),
             _ => false,
         };
 
@@ -149,10 +149,7 @@ mod ZKProofVerifier {
     }
 
     // Verify buy proof (private purchase)
-    fn verify_buy_proof(
-        self: @ContractState,
-        proof: @ZKProof
-    ) -> bool {
+    fn verify_buy_proof(proof: @ZKProof) -> bool {
         // In production: Use Garaga for actual zk-SNARK verification
         // For now: Basic validation
         
@@ -177,10 +174,7 @@ mod ZKProofVerifier {
     }
 
     // Verify sell proof (private sale)
-    fn verify_sell_proof(
-        self: @ContractState,
-        proof: @ZKProof
-    ) -> bool {
+    fn verify_sell_proof(proof: @ZKProof) -> bool {
         // Similar to buy proof verification
         assert(*proof.public_input_hash != 0, 'INVALID_PUBLIC_INPUT');
         assert(*proof.nullifier_hash != 0, 'INVALID_NULLIFIER');
@@ -190,10 +184,7 @@ mod ZKProofVerifier {
     }
 
     // Verify transfer proof (private transfer)
-    fn verify_transfer_proof(
-        self: @ContractState,
-        proof: @ZKProof
-    ) -> bool {
+    fn verify_transfer_proof(proof: @ZKProof) -> bool {
         assert(*proof.public_input_hash != 0, 'INVALID_PUBLIC_INPUT');
         assert(*proof.nullifier_hash != 0, 'INVALID_NULLIFIER');
         
@@ -202,10 +193,7 @@ mod ZKProofVerifier {
     }
 
     // Verify launch proof (anonymous launch)
-    fn verify_launch_proof(
-        self: @ContractState,
-        proof: @ZKProof
-    ) -> bool {
+    fn verify_launch_proof(proof: @ZKProof) -> bool {
         assert(*proof.public_input_hash != 0, 'INVALID_PUBLIC_INPUT');
         
         // In production: Verify creator anonymity proof
@@ -227,9 +215,27 @@ mod ZKProofVerifier {
             }
             
             let proof = *proofs.at(i);
-            let valid = self.verify_proof(proof);
-            if !valid {
-                return false;
+            let proof_hash = hash_proof(@proof);
+            
+            // Check if already verified
+            if !self.verified_proofs.read(proof_hash) {
+                // Verify based on proof type
+                let valid = match proof.proof_type {
+                    1 => verify_buy_proof(@proof),
+                    2 => verify_sell_proof(@proof),
+                    3 => verify_transfer_proof(@proof),
+                    4 => verify_launch_proof(@proof),
+                    _ => false,
+                };
+                
+                if !valid {
+                    return false;
+                }
+                
+                // Mark as verified
+                self.verified_proofs.write(proof_hash, true);
+                let count = self.verification_count.read();
+                self.verification_count.write(count + 1);
             }
             
             i += 1;
@@ -239,10 +245,7 @@ mod ZKProofVerifier {
     }
 
     // Hash proof for uniqueness check
-    fn hash_proof(
-        self: @ContractState,
-        proof: @ZKProof
-    ) -> felt252 {
+    fn hash_proof(proof: @ZKProof) -> felt252 {
         let mut data = ArrayTrait::new();
         data.append(*proof.public_input_hash);
         data.append(*proof.merkle_root);
@@ -323,9 +326,30 @@ mod ZKProofVerifier {
         // Check if verifier is trusted
         assert(self.trusted_verifiers.read(verifier), 'UNTRUSTED_VERIFIER');
         
-        // In production: Call external verifier contract
-        // For now: Use internal verification
-        self.verify_proof(proof)
+        // Calculate proof hash
+        let proof_hash = hash_proof(@proof);
+        
+        // Check if already verified
+        if self.verified_proofs.read(proof_hash) {
+            return true;
+        }
+
+        // Verify based on proof type
+        let valid = match proof.proof_type {
+            1 => verify_buy_proof(@proof),
+            2 => verify_sell_proof(@proof),
+            3 => verify_transfer_proof(@proof),
+            4 => verify_launch_proof(@proof),
+            _ => false,
+        };
+
+        if valid {
+            self.verified_proofs.write(proof_hash, true);
+            let count = self.verification_count.read();
+            self.verification_count.write(count + 1);
+        }
+
+        valid
     }
 }
 

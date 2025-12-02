@@ -1,10 +1,11 @@
 # Dependencies
 node_modules/
 target/
-
+documents
 # Environment variables
 .env
 .env.local
+.kiro
 
 # Deployment files
 deployments/*.json

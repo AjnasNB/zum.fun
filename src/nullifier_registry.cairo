@@ -155,6 +155,7 @@ mod NullifierRegistry {
         pool: ContractAddress
     ) {
         only_authorized(@self);
+        let caller = get_caller_address();
         
         let mut i: u32 = 0;
         let len = nullifiers.len();
@@ -165,7 +166,42 @@ mod NullifierRegistry {
             }
             
             let nullifier = *nullifiers.at(i);
-            self.spend_nullifier(nullifier, pool);
+            
+            // Check if already spent (prevent double-spending)
+            let already_spent = self.spent_nullifiers.read(nullifier);
+            if already_spent {
+                self.emit(DoubleSpendAttempt {
+                    nullifier,
+                    attacker: caller,
+                });
+                assert(false, 'NULLIFIER_ALREADY_SPENT');
+            }
+
+            // Mark as spent
+            let timestamp = get_block_timestamp();
+            self.spent_nullifiers.write(nullifier, true);
+            
+            // Store entry details
+            let entry = NullifierEntry {
+                nullifier,
+                spent_at: timestamp,
+                pool,
+                spent_by: caller,
+            };
+            self.nullifier_entries.write(nullifier, entry);
+
+            // Update counters
+            let total = self.total_spent.read();
+            self.total_spent.write(total + 1);
+            
+            let pool_count = self.pool_nullifier_count.read(pool);
+            self.pool_nullifier_count.write(pool, pool_count + 1);
+
+            self.emit(NullifierSpent {
+                nullifier,
+                pool,
+                timestamp,
+            });
             
             i += 1;
         };

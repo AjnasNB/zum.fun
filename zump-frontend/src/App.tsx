@@ -49,7 +49,7 @@ import { ThemeSettings, SettingsProvider } from './components/settings';
 // https://docs.minimals.cc/authentication/ts-version
 
 import { AuthProvider } from './auth/JwtContext';
-import { Web3ModalProvider } from './auth/Web3Modal';
+import { StarknetProvider } from './providers/StarknetProvider';
 // import { AuthProvider } from './auth/Auth0Context';
 // import { AuthProvider } from './auth/FirebaseContext';
 // import { AuthProvider } from './auth/AwsCognitoContext';
@@ -58,7 +58,7 @@ import { Web3ModalProvider } from './auth/Web3Modal';
 
 export default function App() {
   return (
-    <Web3ModalProvider>
+    <StarknetProvider>
       <AuthProvider>
         <HelmetProvider>
           <ReduxProvider store={store}>
@@ -86,6 +86,6 @@ export default function App() {
           </ReduxProvider>
         </HelmetProvider>
       </AuthProvider>
-    </Web3ModalProvider>
+    </StarknetProvider>
   );
 }

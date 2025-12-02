@@ -6,6 +6,9 @@ edition = "2024_07"
 [dependencies]
 starknet = ">=2.3.0"
 
+[dev-dependencies]
+cairo_test = ">=2.3.0"
+
 [[target.starknet-contract]]
 casm = true
 
